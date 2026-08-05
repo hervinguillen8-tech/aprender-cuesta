@@ -123,7 +123,7 @@
   <!-- Contenido Principal -->
   <main class="max-w-7xl mx-auto px-4 py-6 flex-1 w-full grid grid-cols-1 lg:grid-cols-12 gap-6">
     
-    <!-- Columna Izquierda: Temporizador, Rachas, Flashcards -->
+    <!-- Columna Izquierda: Temporizador, Tareas, Sonidos, Rachas, Flashcards -->
     <div class="lg:col-span-4 space-y-6">
       
       <!-- Temporizador Funcional -->
@@ -143,7 +143,7 @@
           </div>
         </div>
         
-        <div class="text-center py-2">
+        <div class="text-center py-1">
           <div class="text-4xl font-mono font-bold text-indigo-400 tracking-wider mb-2" id="timer-display">
             06:00:00
           </div>
@@ -160,6 +160,62 @@
         </div>
       </div>
 
+      <!-- NUEVO: Reproductor de Sonidos Ambientales -->
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-sm space-y-3">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="text-base">🎧</span>
+            <h2 class="text-base font-bold text-slate-200">Ambiente de Estudio</h2>
+          </div>
+          <span id="audio-status" class="text-[10px] text-slate-400 font-mono">Pausado</span>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <button onclick="playAmbientSound('rain')" class="sound-btn bg-slate-950 border border-slate-800 hover:border-indigo-500 text-xs py-2 rounded-xl flex items-center justify-center gap-1.5 transition">
+            <span>🌧️</span> <span>Lluvia</span>
+          </button>
+          <button onclick="playAmbientSound('waves')" class="sound-btn bg-slate-950 border border-slate-800 hover:border-indigo-500 text-xs py-2 rounded-xl flex items-center justify-center gap-1.5 transition">
+            <span>🌊</span> <span>Olas</span>
+          </button>
+          <button onclick="playAmbientSound('cafe')" class="sound-btn bg-slate-950 border border-slate-800 hover:border-indigo-500 text-xs py-2 rounded-xl flex items-center justify-center gap-1.5 transition">
+            <span>☕</span> <span>Cafetería</span>
+          </button>
+          <button onclick="playAmbientSound('noise')" class="sound-btn bg-slate-950 border border-slate-800 hover:border-indigo-500 text-xs py-2 rounded-xl flex items-center justify-center gap-1.5 transition">
+            <span>📻</span> <span>Ruido Blanco</span>
+          </button>
+        </div>
+
+        <div class="flex items-center justify-between pt-1 gap-2">
+          <span class="text-xs text-slate-400">Volumen:</span>
+          <input type="range" id="sound-volume" min="0" max="1" step="0.05" value="0.3" oninput="setAmbientVolume(this.value)" class="w-full accent-indigo-500 cursor-pointer">
+          <button onclick="stopAmbientSound()" class="bg-rose-950 text-rose-300 border border-rose-800 hover:bg-rose-900 text-xs px-2.5 py-1 rounded-lg transition">Detener</button>
+        </div>
+      </div>
+
+      <!-- NUEVO: Metas del Día (To-Do List) -->
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-sm space-y-3">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="text-base">📋</span>
+            <h2 class="text-base font-bold text-slate-200">Metas Diarias</h2>
+          </div>
+          <span class="text-xs text-indigo-400 font-bold" id="todo-progress-text">0%</span>
+        </div>
+
+        <!-- Barra de Progreso -->
+        <div class="w-full bg-slate-950 h-2 rounded-full overflow-hidden border border-slate-800">
+          <div id="todo-progress-bar" class="bg-indigo-600 h-full transition-all duration-300" style="width: 0%;"></div>
+        </div>
+
+        <!-- Lista de tareas -->
+        <div id="todo-list" class="space-y-1.5 max-h-40 overflow-y-auto pr-1"></div>
+
+        <form onsubmit="addTodoTask(event)" class="flex gap-2 pt-1">
+          <input type="text" id="todo-input" placeholder="Nueva meta..." required class="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-3 py-1.5 text-xs text-slate-100 focus:outline-none focus:border-indigo-500">
+          <button type="submit" class="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs px-3 py-1.5 rounded-xl transition">+</button>
+        </form>
+      </div>
+
       <!-- Rachas -->
       <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-sm">
         <div class="flex items-center justify-between mb-3">
@@ -174,7 +230,7 @@
         <div class="grid grid-cols-7 gap-1.5 text-center mt-2" id="streak-grid"></div>
       </div>
 
-      <!-- Flashcards -->
+      <!-- Flashcards con Autoevaluación -->
       <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-sm space-y-4">
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-2">
@@ -186,12 +242,17 @@
 
         <div class="h-36 w-full cursor-pointer relative" onclick="flipCard()">
           <div id="card-front" class="card-box absolute inset-0 p-4 flex flex-col items-center justify-center bg-slate-800 border border-slate-700 rounded-xl text-center">
-            <span class="text-xs uppercase tracking-wider text-indigo-400 font-bold mb-1">Pregunta</span>
+            <span class="text-xs uppercase tracking-wider text-indigo-400 font-bold mb-1">Pregunta (Clic para voltear)</span>
             <p class="text-xs font-medium text-slate-100" id="card-question">Agrega una tarjeta para comenzar</p>
           </div>
           <div id="card-back" class="card-box hide-card absolute inset-0 p-4 flex flex-col items-center justify-center bg-slate-800 border border-indigo-600 rounded-xl text-center">
             <span class="text-xs uppercase tracking-wider text-emerald-400 font-bold mb-1">Respuesta</span>
-            <p class="text-xs font-medium text-slate-100" id="card-answer">---</p>
+            <p class="text-xs font-medium text-slate-100 mb-2" id="card-answer">---</p>
+            
+            <div class="flex gap-2" onclick="event.stopPropagation()">
+              <button onclick="reviewCard(false)" class="bg-amber-950 text-amber-300 border border-amber-800 text-[10px] px-2 py-0.5 rounded transition">🔄 Repasar</button>
+              <button onclick="reviewCard(true)" class="bg-emerald-950 text-emerald-300 border border-emerald-800 text-[10px] px-2 py-0.5 rounded transition">✅ Me la sé</button>
+            </div>
           </div>
         </div>
 
@@ -210,9 +271,9 @@
 
     </div>
 
-    <!-- Columna Derecha: SISTEMA DE PESTAÑAS (PDF Y APUNTES DEDICADOS) -->
+    <!-- Columna Derecha: SISTEMA DE PESTAÑAS Y CUADERNO MULTI-NOTA -->
     <div class="lg:col-span-8">
-      <div id="main-tab-container" class="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-sm space-y-4 flex flex-col h-[820px] transition-all">
+      <div id="main-tab-container" class="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-sm space-y-4 flex flex-col h-[880px] transition-all">
         
         <!-- Barra Superior de Pestañas -->
         <div class="flex items-center justify-between border-b border-slate-800 pb-3">
@@ -221,7 +282,7 @@
               <span>📚 Visor de PDF</span>
             </button>
             <button id="tab-btn-notes" onclick="switchTab('notes')" class="px-4 py-2 rounded-xl text-xs font-bold transition bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-slate-200 flex items-center gap-2">
-              <span>📝 Mis Apuntes Privados</span>
+              <span>📝 Mis Apuntes Avanzados</span>
             </button>
           </div>
           
@@ -260,21 +321,40 @@
           </div>
         </div>
 
-        <!-- PESTAÑA 2: CUADERNO DE APUNTES PRIVADO DEDICADO -->
+        <!-- PESTAÑA 2: CUADERNO MULTI-NOTA CON FORMATO Y DESCARGA -->
         <div id="view-notes-tab" class="flex-1 flex flex-col space-y-3 min-h-0 hidden">
-          <div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800 flex items-center justify-between">
+          <!-- Gestor de Cuadernos y Notas -->
+          <div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800 flex flex-wrap items-center justify-between gap-2">
+            <div class="flex items-center gap-2 flex-1 min-w-[220px]">
+              <span class="text-xs text-indigo-400 font-semibold">📓 Libreta:</span>
+              <select id="notes-select" onchange="selectNote(this.value)" class="flex-1 bg-slate-900 border border-slate-700 rounded-lg text-xs px-2.5 py-1.5 text-slate-200 focus:outline-none focus:border-indigo-500">
+              </select>
+            </div>
+
             <div class="flex items-center gap-2">
-              <span class="text-sm">✍️</span>
-              <span class="text-xs font-bold text-slate-200">Cuaderno de Apuntes Personal</span>
+              <button onclick="createNewNote()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs px-3 py-1.5 rounded-lg transition">+ Nueva Nota</button>
+              <button onclick="exportCurrentNote()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs px-2.5 py-1.5 rounded-lg transition">📥 Descargar .txt</button>
+              <button onclick="deleteCurrentNote()" class="bg-rose-950 hover:bg-rose-900 text-rose-300 border border-rose-800 text-xs px-2 py-1.5 rounded-lg transition">🗑️</button>
+            </div>
+          </div>
+
+          <!-- Barra de Herramientas de Formato (Rich Text) -->
+          <div class="bg-slate-950 px-3 py-2 rounded-xl border border-slate-800 flex flex-wrap items-center justify-between gap-2">
+            <div class="flex items-center gap-1">
+              <button onclick="formatText('bold')" class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded text-xs font-bold" title="Negrita">B</button>
+              <button onclick="formatText('italic')" class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded text-xs italic" title="Cursiva">I</button>
+              <button onclick="formatText('underline')" class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded text-xs underline" title="Subrayado">U</button>
+              <button onclick="formatText('hiliteColor', '#fef08a')" class="px-2.5 py-1 bg-yellow-900/60 text-yellow-300 hover:bg-yellow-800/80 rounded text-xs" title="Resaltar">🖊️</button>
+              <button onclick="formatText('insertUnorderedList')" class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded text-xs" title="Lista">• Lista</button>
             </div>
             <span id="save-status" class="text-[11px] text-emerald-400 font-medium">✓ Guardado automáticamente</span>
           </div>
 
-          <!-- Editor Completo de Apuntes -->
+          <!-- Editor Principal de Contenido -->
           <div id="notebook-editor" 
                contenteditable="true" 
-               oninput="saveNotebook()"
-               placeholder="Escribe aquí tus apuntes, resúmenes, fórmulas o notas de estudio libres..." 
+               oninput="saveCurrentNoteContent()"
+               placeholder="Escribe aquí tus apuntes, resúmenes o fórmulas..." 
                class="w-full flex-1 bg-slate-950 text-slate-100 p-4 rounded-xl border border-slate-800 focus:outline-none focus:border-indigo-500 overflow-y-auto text-sm leading-relaxed font-sans">
           </div>
         </div>
@@ -285,7 +365,7 @@
   </main>
 
   <script>
-    // --- VARIABLES DE SESIÓN ---
+    // --- VARIABLES GLOBALES Y AUTENTICACIÓN ---
     let currentUser = null;
     let isRegisterMode = false;
     const DB_NAME = 'AprenderCuesta_UserDB';
@@ -294,7 +374,7 @@
 
     // --- LÓGICA DEL TEMPORIZADOR ---
     let timerInterval = null;
-    let timerSeconds = 6 * 3600; // 6 horas por defecto
+    let timerSeconds = 6 * 3600;
     let isTimerRunning = false;
 
     function updateTimerDisplay() {
@@ -334,7 +414,6 @@
           if (timerSeconds > 0) {
             timerSeconds--;
             updateTimerDisplay();
-            // Alerta cada 30 min (1800 segundos)
             if (timerSeconds > 0 && timerSeconds % 1800 === 0) {
               alert("⏰ ¡Llevas 30 minutos de estudio! Tómate un breve descanso.");
             }
@@ -358,7 +437,81 @@
       applyNewConfig();
     }
 
-    // --- CAMBIO DE PESTAÑAS (PDF vs APUNTES) ---
+    // --- REPRODUCTOR DE SONIDOS AMBIENTALES (WEB AUDIO API) ---
+    let audioCtx = null;
+    let currentSource = null;
+    let gainNode = null;
+    let currentSoundType = null;
+
+    function initAudio() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        gainNode = audioCtx.createGain();
+        gainNode.gain.value = parseFloat(document.getElementById('sound-volume').value) || 0.3;
+        gainNode.connect(audioCtx.destination);
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+    }
+
+    function setAmbientVolume(val) {
+      if (gainNode) gainNode.gain.value = parseFloat(val);
+    }
+
+    function stopAmbientSound() {
+      if (currentSource) {
+        try { currentSource.stop(); } catch(e){}
+        currentSource = null;
+      }
+      currentSoundType = null;
+      document.getElementById('audio-status').innerText = 'Pausado';
+    }
+
+    function playAmbientSound(type) {
+      initAudio();
+      stopAmbientSound();
+      currentSoundType = type;
+
+      const bufferSize = audioCtx.sampleRate * 2;
+      const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+      const data = buffer.getChannelData(0);
+
+      for (let i = 0; i < bufferSize; i++) {
+        data[i] = Math.random() * 2 - 1;
+      }
+
+      const noiseSource = audioCtx.createBufferSource();
+      noiseSource.buffer = buffer;
+      noiseSource.loop = true;
+
+      let filter = audioCtx.createBiquadFilter();
+
+      if (type === 'rain') {
+        filter.type = 'lowpass';
+        filter.frequency.value = 1000;
+        document.getElementById('audio-status').innerText = 'Reproduciendo: Lluvia';
+      } else if (type === 'waves') {
+        filter.type = 'bandpass';
+        filter.frequency.value = 400;
+        document.getElementById('audio-status').innerText = 'Reproduciendo: Olas';
+      } else if (type === 'cafe') {
+        filter.type = 'lowpass';
+        filter.frequency.value = 600;
+        document.getElementById('audio-status').innerText = 'Reproduciendo: Café';
+      } else {
+        filter.type = 'lowpass';
+        filter.frequency.value = 3000;
+        document.getElementById('audio-status').innerText = 'Reproduciendo: Ruido Blanco';
+      }
+
+      noiseSource.connect(filter);
+      filter.connect(gainNode);
+      noiseSource.start();
+      currentSource = noiseSource;
+    }
+
+    // --- CAMBIO DE PESTAÑAS ---
     function switchTab(tabName) {
       const pdfTab = document.getElementById('view-pdf-tab');
       const notesTab = document.getElementById('view-notes-tab');
@@ -378,7 +531,7 @@
       }
     }
 
-    // --- FIREBASE AUTENTICACIÓN ---
+    // --- FIREBASE LISTENERS ---
     window.addEventListener('DOMContentLoaded', () => {
       const checkAuthInterval = setInterval(() => {
         if (window.firebaseAuth) {
@@ -441,7 +594,7 @@
       });
     }
 
-    // --- BASE DE DATOS LOCAL Y APUNTES ---
+    // --- BASE DE DATOS LOCAL Y CARGA DE DATOS ---
     function initIndexedDB() {
       return new Promise((resolve, reject) => {
         const request = indexedDB.open(DB_NAME, 1);
@@ -463,34 +616,182 @@
       if (!currentUser) return;
       const uid = currentUser.uid;
 
-      // Cargar apuntes
-      const editor = document.getElementById('notebook-editor');
-      editor.innerHTML = localStorage.getItem(`ac_notebook_${uid}`) || '';
+      // Cargar Notas
+      loadNotesList();
 
-      // Cargar flashcards
+      // Cargar Flashcards
       cards = JSON.parse(localStorage.getItem(`ac_cards_${uid}`)) || [];
       renderCard();
 
-      // Cargar racha
+      // Cargar Rachas
       streakData = JSON.parse(localStorage.getItem(`ac_streaks_${uid}`)) || [];
       renderStreaks();
 
-      // Cargar libros
+      // Cargar Tareas
+      todoTasks = JSON.parse(localStorage.getItem(`ac_todos_${uid}`)) || [];
+      renderTodoList();
+
+      // Cargar Libros PDF
       refreshLibraryList();
     }
 
-    function saveNotebook() {
+    // --- GESTIÓN DE NOTAS MÚLTIPLES Y FORMATO ---
+    let userNotes = [];
+    let activeNoteId = null;
+
+    function loadNotesList() {
       if (!currentUser) return;
-      const editor = document.getElementById('notebook-editor');
-      localStorage.setItem(`ac_notebook_${currentUser.uid}`, editor.innerHTML);
-      const status = document.getElementById('save-status');
-      status.innerText = "Guardando...";
-      setTimeout(() => {
-        status.innerText = "✓ Guardado automáticamente";
-      }, 500);
+      userNotes = JSON.parse(localStorage.getItem(`ac_notes_list_${currentUser.uid}`)) || [
+        { id: 1, title: 'Nota General 1', content: '' }
+      ];
+      renderNotesSelect();
+      if (userNotes.length > 0) {
+        selectNote(userNotes[0].id);
+      }
     }
 
-    // --- GESTIÓN DE LIBROS ---
+    function renderNotesSelect() {
+      const select = document.getElementById('notes-select');
+      select.innerHTML = '';
+      userNotes.forEach(n => {
+        const opt = document.createElement('option');
+        opt.value = n.id;
+        opt.textContent = n.title;
+        select.appendChild(opt);
+      });
+    }
+
+    function selectNote(noteId) {
+      activeNoteId = Number(noteId);
+      document.getElementById('notes-select').value = activeNoteId;
+      const note = userNotes.find(n => n.id === activeNoteId);
+      if (note) {
+        document.getElementById('notebook-editor').innerHTML = note.content;
+      }
+    }
+
+    function saveCurrentNoteContent() {
+      if (!currentUser || !activeNoteId) return;
+      const editor = document.getElementById('notebook-editor');
+      const noteIndex = userNotes.findIndex(n => n.id === activeNoteId);
+      if (noteIndex !== -1) {
+        userNotes[noteIndex].content = editor.innerHTML;
+        localStorage.setItem(`ac_notes_list_${currentUser.uid}`, JSON.stringify(userNotes));
+        
+        const status = document.getElementById('save-status');
+        status.innerText = "Guardando...";
+        setTimeout(() => {
+          status.innerText = "✓ Guardado automáticamente";
+        }, 400);
+      }
+    }
+
+    function createNewNote() {
+      const title = prompt('Nombre de la nueva libreta/nota:', `Nota ${userNotes.length + 1}`);
+      if (!title) return;
+      const newNote = { id: Date.now(), title, content: '' };
+      userNotes.push(newNote);
+      localStorage.setItem(`ac_notes_list_${currentUser.uid}`, JSON.stringify(userNotes));
+      renderNotesSelect();
+      selectNote(newNote.id);
+    }
+
+    function deleteCurrentNote() {
+      if (userNotes.length <= 1) {
+        alert('Debes conservar al menos una nota en tu espacio.');
+        return;
+      }
+      if (confirm('¿Eliminar esta libreta de notas?')) {
+        userNotes = userNotes.filter(n => n.id !== activeNoteId);
+        localStorage.setItem(`ac_notes_list_${currentUser.uid}`, JSON.stringify(userNotes));
+        renderNotesSelect();
+        selectNote(userNotes[0].id);
+      }
+    }
+
+    function exportCurrentNote() {
+      const note = userNotes.find(n => n.id === activeNoteId);
+      if (!note) return;
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = note.content;
+      const textContent = tempDiv.innerText || tempDiv.textContent || '';
+      
+      const blob = new Blob([textContent], { type: 'text/plain;charset=utf-8' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `${note.title.replace(/\s+/g, '_')}.txt`;
+      a.click();
+    }
+
+    function formatText(cmd, val = null) {
+      document.execCommand(cmd, false, val);
+      saveCurrentNoteContent();
+    }
+
+    // --- METAS DIARIAS (TO-DO LIST) ---
+    let todoTasks = [];
+
+    function renderTodoList() {
+      const listEl = document.getElementById('todo-list');
+      listEl.innerHTML = '';
+      
+      if (todoTasks.length === 0) {
+        listEl.innerHTML = '<p class="text-xs text-slate-500 text-center py-2">Sin metas anotadas hoy</p>';
+        updateTodoProgress();
+        return;
+      }
+
+      todoTasks.forEach((t, i) => {
+        listEl.innerHTML += `
+          <div class="flex items-center justify-between bg-slate-950 px-2.5 py-1.5 rounded-lg border border-slate-800 text-xs">
+            <label class="flex items-center gap-2 cursor-pointer flex-1">
+              <input type="checkbox" ${t.done ? 'checked' : ''} onchange="toggleTodoTask(${i})" class="accent-indigo-500 rounded">
+              <span class="${t.done ? 'line-through text-slate-500' : 'text-slate-200'}">${t.text}</span>
+            </label>
+            <button onclick="deleteTodoTask(${i})" class="text-slate-500 hover:text-rose-400 text-xs px-1">✕</button>
+          </div>
+        `;
+      });
+      updateTodoProgress();
+    }
+
+    function updateTodoProgress() {
+      if (todoTasks.length === 0) {
+        document.getElementById('todo-progress-bar').style.width = '0%';
+        document.getElementById('todo-progress-text').innerText = '0%';
+        return;
+      }
+      const doneCount = todoTasks.filter(t => t.done).length;
+      const pct = Math.round((doneCount / todoTasks.length) * 100);
+      document.getElementById('todo-progress-bar').style.width = `${pct}%`;
+      document.getElementById('todo-progress-text').innerText = `${pct}%`;
+    }
+
+    function addTodoTask(e) {
+      e.preventDefault();
+      const input = document.getElementById('todo-input');
+      const text = input.value.trim();
+      if (!text || !currentUser) return;
+
+      todoTasks.push({ text, done: false });
+      localStorage.setItem(`ac_todos_${currentUser.uid}`, JSON.stringify(todoTasks));
+      input.value = '';
+      renderTodoList();
+    }
+
+    function toggleTodoTask(idx) {
+      todoTasks[idx].done = !todoTasks[idx].done;
+      localStorage.setItem(`ac_todos_${currentUser.uid}`, JSON.stringify(todoTasks));
+      renderTodoList();
+    }
+
+    function deleteTodoTask(idx) {
+      todoTasks.splice(idx, 1);
+      localStorage.setItem(`ac_todos_${currentUser.uid}`, JSON.stringify(todoTasks));
+      renderTodoList();
+    }
+
+    // --- GESTIÓN DE PDFS ---
     function saveBookToStorage(file) {
       return new Promise((resolve, reject) => {
         const transaction = db.transaction(['user_books'], 'readwrite');
@@ -640,6 +941,20 @@
       const back = document.getElementById('card-back');
       front.classList.toggle('hide-card');
       back.classList.toggle('hide-card');
+    }
+
+    function reviewCard(known) {
+      if (cards.length === 0) return;
+      if (!known) {
+        // Poner la tarjeta actual al final del mazo para repetirla
+        const current = cards.splice(currentIndex, 1)[0];
+        cards.push(current);
+      } else {
+        // Avanzar normalmente
+        currentIndex = (currentIndex + 1) % cards.length;
+      }
+      flipCard();
+      renderCard();
     }
 
     function nextCard() {
