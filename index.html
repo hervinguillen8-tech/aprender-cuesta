@@ -1,435 +1,989 @@
 <!DOCTYPE html>
-<html lang="es" class="h-full bg-slate-950">
+<html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aprender Cuesta - Suite Estudiantil & IA</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        .custom-scrollbar::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-            background: #0f172a;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: #334155;
-            border-radius: 4px;
-        }
-        .perspective-1000 {
-            perspective: 1000px;
-        }
-        .transform-style-3d {
-            transform-style: preserve-3d;
-        }
-        .backface-hidden {
-            backface-visibility: hidden;
-        }
-        .rotate-y-180 {
-            transform: rotateY(180deg);
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aprender Cuesta - Espacio Privado</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .card-box { transition: opacity 0.2s ease-in-out; }
+    .hide-card { opacity: 0; pointer-events: none; }
+    [contenteditable]:empty:before {
+      content: attr(placeholder);
+      color: #64748b;
+      pointer-events: none;
+      display: block;
+    }
+    #main-tab-container:-webkit-full-screen {
+      width: 100vw; height: 100vh; border-radius: 0; padding: 1rem; background-color: #020617;
+    }
+    #main-tab-container:fullscreen {
+      width: 100vw; height: 100vh; border-radius: 0; padding: 1rem; background-color: #020617;
+    }
+  </style>
+
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { 
+      getAuth, 
+      createUserWithEmailAndPassword, 
+      signInWithEmailAndPassword, 
+      signOut, 
+      onAuthStateChanged 
+    } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDDmvbLtznJVmc_suQbNitYQ_FTAuH6uiQ",
+      authDomain: "aprener-cuesta.firebaseapp.com",
+      projectId: "aprener-cuesta",
+      storageBucket: "aprener-cuesta.firebasestorage.app",
+      messagingSenderId: "71261869384",
+      appId: "1:71261869384:web:ef3ff24db8ec0c44aecf7d",
+      measurementId: "G-V84GC7RQNY"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    window.firebaseAuth = {
+      auth,
+      createUserWithEmailAndPassword,
+      signInWithEmailAndPassword,
+      signOut,
+      onAuthStateChanged
+    };
+  </script>
 </head>
-<body class="h-full flex flex-col font-sans text-slate-100 bg-slate-950 antialiased overflow-hidden">
+<body class="bg-slate-950 text-slate-100 min-h-screen font-sans flex flex-col selection:bg-indigo-600">
 
-    <!-- BARRA SUPERIOR -->
-    <header class="h-16 bg-slate-900 border-b border-slate-800 px-6 flex items-center justify-between shrink-0 z-20">
-        <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-700 flex items-center justify-center shadow-lg shadow-emerald-500/20">
-                <i class="fa-solid fa-graduation-cap text-white text-lg"></i>
-            </div>
-            <div>
-                <h1 class="font-bold text-lg leading-none tracking-tight text-white">Aprender Cuesta</h1>
-                <span class="text-xs text-slate-400 font-medium">Estación de Trabajo & Asistente IA</span>
-            </div>
+  <!-- MODAL DE AUTENTICACIÓN -->
+  <div id="auth-modal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-[100] flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-5">
+      <div class="text-center space-y-1">
+        <div class="w-12 h-12 bg-indigo-600 rounded-xl flex items-center justify-center font-black text-xl mx-auto text-white">AC</div>
+        <h2 id="auth-title" class="text-xl font-bold text-slate-100">Iniciar Sesión</h2>
+        <p class="text-xs text-slate-400">Accede a tu biblioteca y notas privadas</p>
+      </div>
+
+      <form onsubmit="handleAuthSubmit(event)" class="space-y-3">
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">Correo Electrónico</label>
+          <input type="email" id="auth-email" required placeholder="tu@correo.com" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-100 focus:outline-none focus:border-indigo-500">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">Contraseña</label>
+          <input type="password" id="auth-password" required placeholder="••••••••" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-100 focus:outline-none focus:border-indigo-500">
         </div>
 
-        <!-- CONTADORES Y POMODORO -->
-        <div class="flex items-center gap-4">
-            <div class="hidden sm:flex items-center gap-2 bg-slate-800 border border-slate-700/60 px-3 py-1.5 rounded-lg text-xs font-semibold text-amber-400">
-                <i class="fa-solid fa-fire text-amber-500"></i>
-                <span id="streak-counter">7 Días de Racha</span>
-            </div>
+        <p id="auth-error" class="text-xs text-rose-400 text-center hidden"></p>
 
-            <div class="flex items-center gap-3 bg-slate-800 border border-slate-700 px-3.5 py-1.5 rounded-lg">
-                <i class="fa-solid fa-stopwatch text-emerald-400 text-sm"></i>
-                <span id="pomo-timer" class="font-mono text-sm font-bold text-slate-200">25:00</span>
-                <button id="pomo-btn" onclick="togglePomodoro()" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs px-2.5 py-1 rounded-md font-semibold transition">
-                    Iniciar
-                </button>
-            </div>
+        <button type="submit" id="auth-btn-submit" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-2 rounded-xl transition text-xs">
+          Entrar a mi Espacio
+        </button>
+      </form>
+
+      <div class="text-center pt-2 border-t border-slate-800">
+        <button onclick="toggleAuthMode()" id="auth-btn-toggle" class="text-xs text-indigo-400 hover:underline">
+          ¿No tienes cuenta? Regístrate gratis
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Encabezado Principal -->
+  <header class="border-b border-slate-800 bg-slate-900 sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center font-black text-lg text-white">
+          AC
         </div>
-    </header>
+        <div>
+          <h1 class="text-xl font-bold tracking-tight text-white leading-none">Aprender Cuesta</h1>
+          <p class="text-xs text-slate-400 mt-1">Plataforma de estudio personal</p>
+        </div>
+      </div>
 
-    <!-- LAYOUT PRINCIPAL -->
-    <div class="flex-1 flex overflow-hidden">
+      <div class="flex items-center gap-3">
+        <div class="flex items-center gap-2 bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-700">
+          <span class="text-lg">🩺</span>
+          <span class="font-bold text-slate-200 text-xs" id="streak-count">0 días</span>
+        </div>
+        
+        <div class="flex items-center gap-2 bg-slate-950 px-3 py-1.5 rounded-lg border border-slate-800">
+          <span class="text-xs text-slate-300 font-medium truncate max-w-[120px]" id="user-display">Cargando...</span>
+          <button onclick="logoutUser()" class="text-xs bg-rose-950 text-rose-300 border border-rose-800 hover:bg-rose-900 px-2 py-0.5 rounded-md transition">
+            Salir
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
 
-        <!-- MENÚ LATERAL -->
-        <aside class="w-64 bg-slate-900 border-r border-slate-800 flex flex-col justify-between shrink-0">
-            <nav class="p-3 space-y-1 overflow-y-auto custom-scrollbar">
-                <div class="px-3 py-2 text-[10px] font-bold text-slate-500 uppercase tracking-wider">Módulos</div>
-                
-                <button onclick="navigate('tab-notebooks', this)" class="nav-item bg-slate-800 text-white w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition">
-                    <i class="fa-solid fa-book-bookmark text-emerald-400"></i>
-                    <span>Mis Cuadernos</span>
-                </button>
+  <!-- Contenido Principal -->
+  <main class="max-w-7xl mx-auto px-4 py-6 flex-1 w-full grid grid-cols-1 lg:grid-cols-12 gap-6">
+    
+    <!-- Columna Izquierda: Temporizador, Reproductor de Música, Tareas, Rachas, Flashcards -->
+    <div class="lg:col-span-4 space-y-6">
+      
+      <!-- Temporizador Funcional -->
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-sm">
+        <div class="flex items-center justify-between mb-3">
+          <div class="flex items-center gap-2">
+            <span class="text-base">⏱️</span>
+            <h2 class="text-base font-bold text-slate-200">Bloque de Estudio</h2>
+          </div>
+          <div class="flex items-center gap-1">
+            <input type="number" id="input-hours" min="0.1" max="24" step="0.5" value="6" 
+                   class="w-14 bg-slate-950 border border-slate-700 rounded-lg text-center text-xs py-1 text-slate-200 focus:outline-none focus:border-indigo-500">
+            <span class="text-xs text-slate-400 font-semibold">hrs</span>
+            <button onclick="applyNewConfig()" class="bg-indigo-950 text-indigo-300 border border-indigo-800 hover:bg-indigo-900 text-xs px-2 py-1 rounded-lg transition ml-1">
+              Fijar
+            </button>
+          </div>
+        </div>
+        
+        <div class="text-center py-1">
+          <div class="text-4xl font-mono font-bold text-indigo-400 tracking-wider mb-2" id="timer-display">
+            06:00:00
+          </div>
+          <p class="text-xs text-slate-400 mb-3">Aviso de descanso automático cada 30 min</p>
+          
+          <div class="flex justify-center gap-2">
+            <button id="btn-start" onclick="toggleTimer()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold px-5 py-2 rounded-xl text-sm transition">
+              Iniciar
+            </button>
+            <button onclick="resetTimer()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold px-4 py-2 rounded-xl text-sm transition border border-slate-700">
+              Reiniciar
+            </button>
+          </div>
+        </div>
+      </div>
 
-                <button onclick="navigate('tab-flashcards', this)" class="nav-item text-slate-400 hover:bg-slate-800 hover:text-white w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition">
-                    <i class="fa-solid fa-layer-group text-purple-400"></i>
-                    <span>Flashcards & Anki</span>
-                </button>
+      <!-- NUEVO REPRODUCTOR MULTIMEDIA PERSONAL (MP3/MP4, Spotify, YouTube) -->
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-sm space-y-3">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="text-base">🎵</span>
+            <h2 class="text-base font-bold text-slate-200">Música de Estudio</h2>
+          </div>
+          <span class="text-[10px] text-indigo-400 font-semibold">MP3/MP4, Spotify, YT</span>
+        </div>
 
-                <button onclick="navigate('tab-ai-prompts', this)" class="nav-item text-slate-400 hover:bg-slate-800 hover:text-white w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition">
-                    <i class="fa-solid fa-wand-magic-sparkles text-amber-400"></i>
-                    <span>Generadores IA</span>
-                </button>
+        <!-- Cargar Archivo Local MP3 / MP4 -->
+        <div class="space-y-2">
+          <label class="block w-full text-center bg-slate-950 hover:bg-slate-800 border border-slate-800 hover:border-indigo-500 text-xs text-slate-300 py-2 rounded-xl cursor-pointer transition font-medium">
+            <span>📁 Cargar MP3 / MP4 desde tu equipo</span>
+            <input type="file" id="media-file-input" accept="audio/*,video/*" onchange="handleLocalMediaUpload(event)" class="hidden">
+          </label>
+          <div id="local-player-container" class="hidden">
+            <p id="local-media-title" class="text-[11px] text-indigo-300 truncate font-semibold mb-1"></p>
+            <audio id="local-audio" controls class="w-full h-8 rounded-lg bg-slate-950 border border-slate-800"></audio>
+            <video id="local-video" controls class="w-full max-h-40 rounded-lg bg-slate-950 border border-slate-800 mt-1 hidden"></video>
+          </div>
+        </div>
 
-                <button onclick="navigate('tab-pdf-viewer', this)" class="nav-item text-slate-400 hover:bg-slate-800 hover:text-white w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition">
-                    <i class="fa-solid fa-file-pdf text-rose-400"></i>
-                    <span>Lectores & PDF</span>
-                </button>
+        <!-- Enlace de Spotify / YouTube Music -->
+        <div class="pt-2 border-t border-slate-800 space-y-2">
+          <form onsubmit="loadEmbeddedMusic(event)" class="flex gap-1.5">
+            <input type="text" id="music-url-input" placeholder="Enlace de Spotify o YouTube..." class="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-2.5 py-1.5 text-xs text-slate-100 focus:outline-none focus:border-indigo-500">
+            <button type="submit" class="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs px-2.5 py-1.5 rounded-xl transition">Cargar</button>
+          </form>
 
-                <button onclick="navigate('tab-media', this)" class="nav-item text-slate-400 hover:bg-slate-800 hover:text-white w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition">
-                    <i class="fa-solid fa-music text-blue-400"></i>
-                    <span>Estudio & Música</span>
-                </button>
+          <!-- Reproductor Embebido Iframe -->
+          <div id="embed-player-container" class="hidden rounded-xl overflow-hidden border border-slate-800 bg-slate-950">
+            <iframe id="embed-iframe" class="w-full h-36 border-none" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+          </div>
+        </div>
+      </div>
 
-                <button onclick="navigate('tab-tasks', this)" class="nav-item text-slate-400 hover:bg-slate-800 hover:text-white w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition">
-                    <i class="fa-solid fa-list-check text-teal-400"></i>
-                    <span>Planificador</span>
-                </button>
-            </nav>
+      <!-- Metas del Día (To-Do List) -->
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-sm space-y-3">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="text-base">📋</span>
+            <h2 class="text-base font-bold text-slate-200">Metas Diarias</h2>
+          </div>
+          <span class="text-xs text-indigo-400 font-bold" id="todo-progress-text">0%</span>
+        </div>
 
-            <div class="p-3 border-t border-slate-800 bg-slate-900/50">
-                <div class="flex items-center gap-3 px-2 py-1.5">
-                    <div class="w-8 h-8 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-300">
-                        <i class="fa-solid fa-user text-xs"></i>
-                    </div>
-                    <div class="truncate">
-                        <p class="text-xs font-semibold text-slate-200 truncate">Estudiante</p>
-                        <p class="text-[10px] text-slate-500">Almacenamiento Local</p>
-                    </div>
-                </div>
+        <!-- Barra de Progreso -->
+        <div class="w-full bg-slate-950 h-2 rounded-full overflow-hidden border border-slate-800">
+          <div id="todo-progress-bar" class="bg-indigo-600 h-full transition-all duration-300" style="width: 0%;"></div>
+        </div>
+
+        <!-- Lista de tareas -->
+        <div id="todo-list" class="space-y-1.5 max-h-40 overflow-y-auto pr-1"></div>
+
+        <form onsubmit="addTodoTask(event)" class="flex gap-2 pt-1">
+          <input type="text" id="todo-input" placeholder="Nueva meta..." required class="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-3 py-1.5 text-xs text-slate-100 focus:outline-none focus:border-indigo-500">
+          <button type="submit" class="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs px-3 py-1.5 rounded-xl transition">+</button>
+        </form>
+      </div>
+
+      <!-- Rachas -->
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-sm">
+        <div class="flex items-center justify-between mb-3">
+          <div class="flex items-center gap-2">
+            <span class="text-base">🩺</span>
+            <h2 class="text-base font-bold text-slate-200">Racha Semanal</h2>
+          </div>
+          <button onclick="markTodayStreak()" class="bg-emerald-950 hover:bg-emerald-900 text-emerald-300 border border-emerald-800 text-xs font-semibold px-2.5 py-1 rounded-lg transition">
+            Marcar Hoy
+          </button>
+        </div>
+        <div class="grid grid-cols-7 gap-1.5 text-center mt-2" id="streak-grid"></div>
+      </div>
+
+      <!-- Flashcards con Autoevaluación -->
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-sm space-y-4">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="text-base">🧠</span>
+            <h2 class="text-base font-bold text-slate-200">Flashcards Privadas</h2>
+          </div>
+          <span class="text-xs font-mono bg-slate-800 px-2.5 py-1 rounded-md text-slate-400 border border-slate-700" id="card-counter">0 / 0</span>
+        </div>
+
+        <div class="h-36 w-full cursor-pointer relative" onclick="flipCard()">
+          <div id="card-front" class="card-box absolute inset-0 p-4 flex flex-col items-center justify-center bg-slate-800 border border-slate-700 rounded-xl text-center">
+            <span class="text-xs uppercase tracking-wider text-indigo-400 font-bold mb-1">Pregunta (Clic para voltear)</span>
+            <p class="text-xs font-medium text-slate-100" id="card-question">Agrega una tarjeta para comenzar</p>
+          </div>
+          <div id="card-back" class="card-box hide-card absolute inset-0 p-4 flex flex-col items-center justify-center bg-slate-800 border border-indigo-600 rounded-xl text-center">
+            <span class="text-xs uppercase tracking-wider text-emerald-400 font-bold mb-1">Respuesta</span>
+            <p class="text-xs font-medium text-slate-100 mb-2" id="card-answer">---</p>
+            
+            <div class="flex gap-2" onclick="event.stopPropagation()">
+              <button onclick="reviewCard(false)" class="bg-amber-950 text-amber-300 border border-amber-800 text-[10px] px-2 py-0.5 rounded transition">🔄 Repasar</button>
+              <button onclick="reviewCard(true)" class="bg-emerald-950 text-emerald-300 border border-emerald-800 text-[10px] px-2 py-0.5 rounded transition">✅ Me la sé</button>
             </div>
-        </aside>
+          </div>
+        </div>
 
-        <!-- ÁREA DE CONTENIDO -->
-        <main class="flex-1 bg-slate-950 overflow-y-auto custom-scrollbar p-6">
+        <div class="flex items-center justify-between">
+          <button onclick="prevCard()" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 px-2.5 py-1 rounded-lg text-xs font-medium transition">← Ant</button>
+          <button onclick="deleteCurrentCard()" class="bg-rose-950 text-rose-300 border border-rose-800 hover:bg-rose-900 px-2 py-1 rounded-lg text-xs transition">Borrar</button>
+          <button onclick="nextCard()" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 px-2.5 py-1 rounded-lg text-xs font-medium transition">Sig →</button>
+        </div>
 
-            <!-- TAB 1: CUADERNOS -->
-            <section id="tab-notebooks" class="tab-pane space-y-6">
-                <div class="flex justify-between items-center">
-                    <div>
-                        <h2 class="text-2xl font-bold text-white tracking-tight">Mis Cuadernos de Estudio</h2>
-                        <p class="text-xs text-slate-400">Toma notas estructuradas para tus materias.</p>
-                    </div>
-                    <button onclick="addNotebook()" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs px-3.5 py-2 rounded-lg font-semibold transition flex items-center gap-2">
-                        <i class="fa-solid fa-plus"></i> Nuevo Cuaderno
-                    </button>
-                </div>
+        <form onsubmit="addCard(event)" class="space-y-2 pt-2 border-t border-slate-800">
+          <input type="text" id="input-q" required placeholder="Pregunta" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-slate-100 focus:outline-none focus:border-indigo-500">
+          <input type="text" id="input-a" required placeholder="Respuesta" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-slate-100 focus:outline-none focus:border-indigo-500">
+          <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-1.5 rounded-lg transition text-xs">+ Guardar Flashcard</button>
+        </form>
+      </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="notebooks-grid">
-                    <div class="bg-slate-900 border border-slate-800 hover:border-slate-700 rounded-xl p-5 transition cursor-pointer space-y-3">
-                        <div class="flex justify-between items-start">
-                            <span class="bg-emerald-950 text-emerald-400 text-[10px] font-bold px-2 py-0.5 rounded border border-emerald-800">STEM</span>
-                        </div>
-                        <h3 class="font-bold text-white text-base">Matemáticas & Física</h3>
-                        <p class="text-xs text-slate-400">Apuntes de fórmulas, ejercicios de cálculo y notas de laboratorio.</p>
-                    </div>
-
-                    <div class="bg-slate-900 border border-slate-800 hover:border-slate-700 rounded-xl p-5 transition cursor-pointer space-y-3">
-                        <div class="flex justify-between items-start">
-                            <span class="bg-purple-950 text-purple-400 text-[10px] font-bold px-2 py-0.5 rounded border border-purple-800">Humanidades</span>
-                        </div>
-                        <h3 class="font-bold text-white text-base">Historia & Lecturas</h3>
-                        <p class="text-xs text-slate-400">Fichas técnicas, artículos y resúmenes para exámenes.</p>
-                    </div>
-                </div>
-            </section>
-
-            <!-- TAB 2: FLASHCARDS -->
-            <section id="tab-flashcards" class="tab-pane hidden space-y-6">
-                <div class="flex justify-between items-center">
-                    <div>
-                        <h2 class="text-2xl font-bold text-white tracking-tight">Repetición Espaciada (Flashcards)</h2>
-                        <p class="text-xs text-slate-400">Repasa tus fichas fijas o exporta tu mazo a Anki.</p>
-                    </div>
-                    <button onclick="exportFlashcards()" class="bg-purple-600 hover:bg-purple-500 text-white text-xs px-3.5 py-2 rounded-lg font-semibold transition flex items-center gap-2">
-                        <i class="fa-solid fa-file-export"></i> Exportar a Anki (.CSV)
-                    </button>
-                </div>
-
-                <div class="flex justify-center my-10">
-                    <div class="w-full max-w-md h-60 perspective-1000 cursor-pointer" onclick="flipCard()">
-                        <div id="flashcard-inner" class="relative w-full h-full duration-500 transform-style-3d bg-slate-900 border border-slate-800 rounded-2xl p-6 flex flex-col justify-between shadow-2xl">
-                            <div class="absolute inset-0 p-6 flex flex-col justify-between backface-hidden bg-slate-900 rounded-2xl border border-slate-800">
-                                <span class="text-[10px] uppercase font-bold text-purple-400">Pregunta</span>
-                                <p class="text-base font-medium text-white text-center my-auto" id="card-q">¿Cuál es el objetivo principal de la repetición espaciada?</p>
-                                <p class="text-[10px] text-slate-500 text-center">Haz clic para voltear la tarjeta</p>
-                            </div>
-                            <div class="absolute inset-0 p-6 flex flex-col justify-between backface-hidden rotate-y-180 bg-slate-900 rounded-2xl border border-slate-800">
-                                <span class="text-[10px] uppercase font-bold text-emerald-400">Respuesta</span>
-                                <p class="text-xs text-slate-300 text-center my-auto" id="card-a">Repasar la información en intervalos calculados de tiempo para combatir la curva del olvido y consolidar la memoria a largo plazo.</p>
-                                <div class="flex justify-center gap-2">
-                                    <button onclick="event.stopPropagation(); alert('Programada para repasar mañana');" class="bg-rose-900/40 text-rose-300 text-[10px] px-3 py-1 rounded border border-rose-800">Difícil</button>
-                                    <button onclick="event.stopPropagation(); alert('Programada para repasar en 4 días');" class="bg-emerald-900/40 text-emerald-300 text-[10px] px-3 py-1 rounded border border-emerald-800">Fácil</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- TAB 3: GENERADORES IA -->
-            <section id="tab-ai-prompts" class="tab-pane hidden space-y-6">
-                <div>
-                    <h2 class="text-2xl font-bold text-white tracking-tight">Asistente de IA (Generadores)</h2>
-                    <p class="text-xs text-slate-400">Copia estos prompts para usarlos en ChatGPT, Gemini o Claude.</p>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-                    <!-- Flashcards CSV Prompt -->
-                    <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-3">
-                        <div class="flex items-center justify-between">
-                            <h3 class="font-bold text-white text-sm flex items-center gap-2">
-                                <i class="fa-solid fa-file-csv text-purple-400"></i> Generador Anki (CSV)
-                            </h3>
-                            <span class="text-[10px] bg-purple-950 text-purple-400 font-semibold px-2 py-0.5 rounded border border-purple-800">Flashcards</span>
-                        </div>
-                        <p class="text-xs text-slate-400">Genera tablas de preguntas y respuestas listas para importar.</p>
-                        <textarea id="p-anki" readonly class="w-full h-32 bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-xs font-mono text-slate-300 resize-none">Actúa como un profesor experto. Lee el texto adjunto y genera una lista de flashcards en formato CSV puro de 3 columnas: "Pregunta","Respuesta","Etiqueta".
-
-Reglas:
-1. Preguntas directas y puntuales.
-2. Respuestas concisas (máximo 2 oraciones).
-3. Sin texto extra ni formato Markdown fuera de la tabla CSV.
-
-Texto a procesar:
-[PEGA AQUÍ TU TEXTO]</textarea>
-                        <button onclick="copyPrompt('p-anki')" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs py-2 rounded-lg font-semibold border border-slate-700 transition">
-                            <i class="fa-regular fa-copy"></i> Copiar Prompt
-                        </button>
-                    </div>
-
-                    <!-- Mermaid Mindmaps Prompt -->
-                    <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-3">
-                        <div class="flex items-center justify-between">
-                            <h3 class="font-bold text-white text-sm flex items-center gap-2">
-                                <i class="fa-solid fa-diagram-project text-blue-400"></i> Mapas Mentales (Mermaid)
-                            </h3>
-                            <span class="text-[10px] bg-blue-950 text-blue-400 font-semibold px-2 py-0.5 rounded border border-blue-800">Esquemas</span>
-                        </div>
-                        <p class="text-xs text-slate-400">Genera estructuras de diagramas visuales en código fuente.</p>
-                        <textarea id="p-mermaid" readonly class="w-full h-32 bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-xs font-mono text-slate-300 resize-none">Genera una estructura de mapa conceptual en código sintaxis Mermaid.js (graph TD) sobre el tema proporcionado.
-
-Estructura:
-- Nodo Central (Tema Principal)
-- Sub-nodos de Nivel 1 (Categorías)
-- Sub-nodos de Nivel 2 (Ejemplos o detalles)
-
-Solo entrega el bloque de código Mermaid sin rodeos.
-
-Texto:
-[PEGA AQUÍ TU TEXTO]</textarea>
-                        <button onclick="copyPrompt('p-mermaid')" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs py-2 rounded-lg font-semibold border border-slate-700 transition">
-                            <i class="fa-regular fa-copy"></i> Copiar Prompt
-                        </button>
-                    </div>
-
-                </div>
-            </section>
-
-            <!-- TAB 4: VISOR PDF -->
-            <section id="tab-pdf-viewer" class="tab-pane hidden space-y-6">
-                <div class="flex justify-between items-center">
-                    <div>
-                        <h2 class="text-2xl font-bold text-white tracking-tight">Visor de PDF Integrado</h2>
-                        <p class="text-xs text-slate-400">Abre archivos de tu computadora para estudiar directo en la app.</p>
-                    </div>
-                    <input type="file" id="pdf-file" accept="application/pdf" class="hidden" onchange="renderPDF(event)">
-                    <button onclick="document.getElementById('pdf-file').click()" class="bg-rose-600 hover:bg-rose-500 text-white text-xs px-3.5 py-2 rounded-lg font-semibold transition flex items-center gap-2">
-                        <i class="fa-solid fa-folder-open"></i> Seleccionar PDF
-                    </button>
-                </div>
-
-                <div id="pdf-view-area" class="w-full h-[550px] bg-slate-900 border border-slate-800 rounded-xl flex items-center justify-center overflow-hidden">
-                    <p class="text-xs text-slate-500">No hay ningún archivo PDF cargado.</p>
-                </div>
-            </section>
-
-            <!-- TAB 5: MULTIMEDIA -->
-            <section id="tab-media" class="tab-pane hidden space-y-6">
-                <div>
-                    <h2 class="text-2xl font-bold text-white tracking-tight">Música y Ambiente de Estudio</h2>
-                    <p class="text-xs text-slate-400">Escucha pistas locales o conecta tus listas preferidas.</p>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-4">
-                        <h3 class="font-bold text-white text-sm flex items-center gap-2">
-                            <i class="fa-solid fa-music text-blue-400"></i> Reproductor Local (MP3)
-                        </h3>
-                        <audio id="audio-elem" controls class="w-full"></audio>
-                        <input type="file" accept="audio/*" onchange="playAudio(event)" class="text-xs text-slate-400">
-                    </div>
-
-                    <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-4">
-                        <h3 class="font-bold text-white text-sm flex items-center gap-2">
-                            <i class="fa-brands fa-spotify text-emerald-400"></i> Repositorio Lofi
-                        </h3>
-                        <iframe style="border-radius:12px" src="https://open.spotify.com/embed/playlist/37i9dQZF1DX8NTLI29SZaM?utm_source=generator&theme=0" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
-                    </div>
-                </div>
-            </section>
-
-            <!-- TAB 6: PLANIFICADOR -->
-            <section id="tab-tasks" class="tab-pane hidden space-y-6">
-                <div>
-                    <h2 class="text-2xl font-bold text-white tracking-tight">Planificador de Entregas</h2>
-                    <p class="text-xs text-slate-400">Lista simple de actividades pendientes.</p>
-                </div>
-
-                <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 max-w-xl space-y-4">
-                    <div class="flex gap-2">
-                        <input type="text" id="new-task-text" placeholder="Escribe una tarea..." class="flex-1 bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-emerald-500">
-                        <button onclick="createTask()" class="bg-teal-600 hover:bg-teal-500 text-white text-xs px-4 py-2 rounded-lg font-semibold transition">
-                            Añadir
-                        </button>
-                    </div>
-
-                    <ul id="tasks-container" class="space-y-2">
-                        <li class="flex items-center justify-between bg-slate-950 p-3 rounded-lg border border-slate-800 text-xs">
-                            <span class="text-slate-300">Generar mapa mental de Química</span>
-                            <button onclick="this.parentElement.remove()" class="text-slate-500 hover:text-rose-400">
-                                <i class="fa-solid fa-trash"></i>
-                            </button>
-                        </li>
-                    </ul>
-                </div>
-            </section>
-
-        </main>
     </div>
 
-    <!-- SCRIPTS EN JS PURO -->
-    <script>
-        // Cambiar pestañas
-        function navigate(tabId, button) {
-            document.querySelectorAll('.tab-pane').forEach(el => el.classList.add('hidden'));
-            document.querySelectorAll('.nav-item').forEach(el => {
-                el.classList.remove('bg-slate-800', 'text-white');
-                el.classList.add('text-slate-400');
-            });
+    <!-- Columna Derecha: SISTEMA DE PESTAÑAS Y CUADERNO MULTI-NOTA -->
+    <div class="lg:col-span-8">
+      <div id="main-tab-container" class="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-sm space-y-4 flex flex-col h-[880px] transition-all">
+        
+        <!-- Barra Superior de Pestañas -->
+        <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+          <div class="flex items-center gap-2">
+            <button id="tab-btn-pdf" onclick="switchTab('pdf')" class="px-4 py-2 rounded-xl text-xs font-bold transition bg-indigo-600 text-white shadow-sm flex items-center gap-2">
+              <span>📚 Visor de PDF</span>
+            </button>
+            <button id="tab-btn-notes" onclick="switchTab('notes')" class="px-4 py-2 rounded-xl text-xs font-bold transition bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-slate-200 flex items-center gap-2">
+              <span>📝 Mis Apuntes Avanzados</span>
+            </button>
+          </div>
+          
+          <button onclick="toggleFullscreen()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs px-3 py-1.5 rounded-xl transition flex items-center gap-1">
+            <span>⛶</span>
+            <span class="hidden sm:inline">Pantalla Completa</span>
+          </button>
+        </div>
 
-            document.getElementById(tabId).classList.remove('hidden');
-            button.classList.add('bg-slate-800', 'text-white');
-            button.classList.remove('text-slate-400');
-        }
-
-        // Voltear Flashcards
-        function flipCard() {
-            document.getElementById('flashcard-inner').classList.toggle('rotate-y-180');
-        }
-
-        // Copiar Prompts
-        function copyPrompt(id) {
-            const txt = document.getElementById(id);
-            txt.select();
-            navigator.clipboard.writeText(txt.value);
-            alert('¡Prompt copiado al portapapeles!');
-        }
-
-        // Temporizador Pomodoro
-        let pTimer = null;
-        let pSeconds = 1500;
-
-        function togglePomodoro() {
-            const btn = document.getElementById('pomo-btn');
-            if (pTimer) {
-                clearInterval(pTimer);
-                pTimer = null;
-                btn.innerText = "Iniciar";
-                btn.classList.replace('bg-rose-600', 'bg-emerald-600');
-            } else {
-                btn.innerText = "Pausar";
-                btn.classList.replace('bg-emerald-600', 'bg-rose-600');
-                pTimer = setInterval(() => {
-                    pSeconds--;
-                    const m = String(Math.floor(pSeconds / 60)).padStart(2, '0');
-                    const s = String(pSeconds % 60).padStart(2, '0');
-                    document.getElementById('pomo-timer').innerText = `${m}:${s}`;
-                    if (pSeconds <= 0) {
-                        clearInterval(pTimer);
-                        alert("¡Tiempo de estudio concluido!");
-                    }
-                }, 1000);
-            }
-        }
-
-        // Cargar PDF
-        function renderPDF(e) {
-            const file = e.target.files[0];
-            if (file) {
-                const url = URL.createObjectURL(file);
-                document.getElementById('pdf-view-area').innerHTML = `<iframe src="${url}" class="w-full h-full border-0"></iframe>`;
-            }
-        }
-
-        // Cargar Audio
-        function playAudio(e) {
-            const file = e.target.files[0];
-            if (file) {
-                const audio = document.getElementById('audio-elem');
-                audio.src = URL.createObjectURL(file);
-                audio.play();
-            }
-        }
-
-        // Crear Tareas
-        function createTask() {
-            const input = document.getElementById('new-task-text');
-            if (!input.value.trim()) return;
-            const ul = document.getElementById('tasks-container');
-            const li = document.createElement('li');
-            li.className = "flex items-center justify-between bg-slate-950 p-3 rounded-lg border border-slate-800 text-xs";
-            li.innerHTML = `<span class="text-slate-300">${input.value}</span>
-                <button onclick="this.parentElement.remove()" class="text-slate-500 hover:text-rose-400">
-                    <i class="fa-solid fa-trash"></i>
-                </button>`;
-            ul.appendChild(li);
-            input.value = "";
-        }
-
-        // Crear Cuaderno Demo
-        function addNotebook() {
-            const title = prompt("Nombre del cuaderno:");
-            if (!title) return;
-            const grid = document.getElementById('notebooks-grid');
-            const card = document.createElement('div');
-            card.className = "bg-slate-900 border border-slate-800 hover:border-slate-700 rounded-xl p-5 transition cursor-pointer space-y-3";
-            card.innerHTML = `<div class="flex justify-between items-start">
-                <span class="bg-blue-950 text-blue-400 text-[10px] font-bold px-2 py-0.5 rounded border border-blue-800">General</span>
+        <!-- PESTAÑA 1: VISOR DE LIBROS PDF -->
+        <div id="view-pdf-tab" class="flex-1 flex flex-col space-y-3 min-h-0">
+          <div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800 flex flex-wrap items-center justify-between gap-2">
+            <div class="flex items-center gap-2 flex-1 min-w-[240px]">
+              <span class="text-xs text-indigo-400 font-semibold flex items-center gap-1">💾 Mis Libros:</span>
+              <select id="library-select" onchange="switchSavedBook(this.value)" class="flex-1 bg-slate-900 border border-slate-700 rounded-lg text-xs px-2.5 py-1.5 text-slate-200 focus:outline-none focus:border-indigo-500">
+                <option value="">Inicia sesión para ver tu biblioteca...</option>
+              </select>
             </div>
-            <h3 class="font-bold text-white text-base">${title}</h3>
-            <p class="text-xs text-slate-400">Nuevo cuaderno de notas listo para editar.</p>`;
-            grid.appendChild(card);
+
+            <div class="flex items-center gap-2">
+              <label class="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs px-3 py-1.5 rounded-lg cursor-pointer transition flex items-center gap-1 shadow-sm">
+                <span>➕ Subir PDF</span>
+                <input type="file" id="pdf-input" accept="application/pdf" onchange="handlePDFUpload(event)" class="hidden">
+              </label>
+              <button onclick="deleteSelectedBook()" class="bg-rose-950 hover:bg-rose-900 text-rose-300 border border-rose-800 text-xs px-2.5 py-1.5 rounded-lg transition" title="Eliminar libro seleccionado">🗑️</button>
+            </div>
+          </div>
+
+          <div id="pdf-container" class="relative w-full flex-1 bg-slate-950 rounded-xl border border-slate-800 overflow-hidden flex items-center justify-center">
+            <div id="pdf-placeholder" class="text-center p-6 space-y-2">
+              <span class="text-4xl block opacity-80">📚</span>
+              <p class="text-sm font-medium text-slate-200" id="book-title">Selecciona o sube un libro personal</p>
+              <p class="text-xs text-slate-400">El PDF se guardará de forma segura en tu navegador</p>
+            </div>
+            <iframe id="pdf-frame" class="w-full h-full hidden border-none rounded-xl" src=""></iframe>
+          </div>
+        </div>
+
+        <!-- PESTAÑA 2: CUADERNO MULTI-NOTA CON FORMATO Y DESCARGA -->
+        <div id="view-notes-tab" class="flex-1 flex flex-col space-y-3 min-h-0 hidden">
+          <!-- Gestor de Cuadernos y Notas -->
+          <div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800 flex flex-wrap items-center justify-between gap-2">
+            <div class="flex items-center gap-2 flex-1 min-w-[220px]">
+              <span class="text-xs text-indigo-400 font-semibold">📓 Libreta:</span>
+              <select id="notes-select" onchange="selectNote(this.value)" class="flex-1 bg-slate-900 border border-slate-700 rounded-lg text-xs px-2.5 py-1.5 text-slate-200 focus:outline-none focus:border-indigo-500">
+              </select>
+            </div>
+
+            <div class="flex items-center gap-2">
+              <button onclick="createNewNote()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs px-3 py-1.5 rounded-lg transition">+ Nueva Nota</button>
+              <button onclick="exportCurrentNote()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs px-2.5 py-1.5 rounded-lg transition">📥 Descargar .txt</button>
+              <button onclick="deleteCurrentNote()" class="bg-rose-950 hover:bg-rose-900 text-rose-300 border border-rose-800 text-xs px-2 py-1.5 rounded-lg transition">🗑️</button>
+            </div>
+          </div>
+
+          <!-- Barra de Herramientas de Formato (Rich Text) -->
+          <div class="bg-slate-950 px-3 py-2 rounded-xl border border-slate-800 flex flex-wrap items-center justify-between gap-2">
+            <div class="flex items-center gap-1">
+              <button onclick="formatText('bold')" class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded text-xs font-bold" title="Negrita">B</button>
+              <button onclick="formatText('italic')" class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded text-xs italic" title="Cursiva">I</button>
+              <button onclick="formatText('underline')" class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded text-xs underline" title="Subrayado">U</button>
+              <button onclick="formatText('hiliteColor', '#fef08a')" class="px-2.5 py-1 bg-yellow-900/60 text-yellow-300 hover:bg-yellow-800/80 rounded text-xs" title="Resaltar">🖊️</button>
+              <button onclick="formatText('insertUnorderedList')" class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded text-xs" title="Lista">• Lista</button>
+            </div>
+            <span id="save-status" class="text-[11px] text-emerald-400 font-medium">✓ Guardado automáticamente</span>
+          </div>
+
+          <!-- Editor Principal de Contenido -->
+          <div id="notebook-editor" 
+               contenteditable="true" 
+               oninput="saveCurrentNoteContent()"
+               placeholder="Escribe aquí tus apuntes, resúmenes o fórmulas..." 
+               class="w-full flex-1 bg-slate-950 text-slate-100 p-4 rounded-xl border border-slate-800 focus:outline-none focus:border-indigo-500 overflow-y-auto text-sm leading-relaxed font-sans">
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    // --- VARIABLES GLOBALES Y AUTENTICACIÓN ---
+    let currentUser = null;
+    let isRegisterMode = false;
+    const DB_NAME = 'AprenderCuesta_UserDB';
+    let db = null;
+    let activeObjectUrl = null;
+
+    // --- LÓGICA DEL TEMPORIZADOR ---
+    let timerInterval = null;
+    let timerSeconds = 6 * 3600;
+    let isTimerRunning = false;
+
+    function updateTimerDisplay() {
+      const hrs = Math.floor(timerSeconds / 3600);
+      const mins = Math.floor((timerSeconds % 3600) / 60);
+      const secs = timerSeconds % 60;
+      document.getElementById('timer-display').innerText = 
+        `${String(hrs).padStart(2, '0')}:${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+    }
+
+    function applyNewConfig() {
+      const inputVal = parseFloat(document.getElementById('input-hours').value) || 6;
+      timerSeconds = Math.floor(inputVal * 3600);
+      if (isTimerRunning) {
+        clearInterval(timerInterval);
+        isTimerRunning = false;
+        document.getElementById('btn-start').innerText = 'Iniciar';
+        document.getElementById('btn-start').className = 'bg-indigo-600 hover:bg-indigo-500 text-white font-semibold px-5 py-2 rounded-xl text-sm transition';
+      }
+      updateTimerDisplay();
+    }
+
+    function toggleTimer() {
+      const btn = document.getElementById('btn-start');
+      if (isTimerRunning) {
+        clearInterval(timerInterval);
+        isTimerRunning = false;
+        btn.innerText = 'Continuar';
+        btn.className = 'bg-indigo-600 hover:bg-indigo-500 text-white font-semibold px-5 py-2 rounded-xl text-sm transition';
+      } else {
+        if (timerSeconds <= 0) return;
+        isTimerRunning = true;
+        btn.innerText = 'Pausar';
+        btn.className = 'bg-amber-600 hover:bg-amber-500 text-white font-semibold px-5 py-2 rounded-xl text-sm transition';
+        
+        timerInterval = setInterval(() => {
+          if (timerSeconds > 0) {
+            timerSeconds--;
+            updateTimerDisplay();
+            if (timerSeconds > 0 && timerSeconds % 1800 === 0) {
+              alert("⏰ ¡Llevas 30 minutos de estudio! Tómate un breve descanso.");
+            }
+          } else {
+            clearInterval(timerInterval);
+            isTimerRunning = false;
+            btn.innerText = 'Iniciar';
+            btn.className = 'bg-indigo-600 hover:bg-indigo-500 text-white font-semibold px-5 py-2 rounded-xl text-sm transition';
+            alert("🎉 ¡Bloque de estudio completado!");
+          }
+        }, 1000);
+      }
+    }
+
+    function resetTimer() {
+      if (timerInterval) clearInterval(timerInterval);
+      isTimerRunning = false;
+      const btn = document.getElementById('btn-start');
+      btn.innerText = 'Iniciar';
+      btn.className = 'bg-indigo-600 hover:bg-indigo-500 text-white font-semibold px-5 py-2 rounded-xl text-sm transition';
+      applyNewConfig();
+    }
+
+    // --- REPRODUCTOR MULTIMEDIA PERSONAL (MP3/MP4 & SPOTIFY/YOUTUBE) ---
+    let localMediaUrl = null;
+
+    function handleLocalMediaUpload(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      if (localMediaUrl) URL.revokeObjectURL(localMediaUrl);
+      localMediaUrl = URL.createObjectURL(file);
+
+      const container = document.getElementById('local-player-container');
+      const title = document.getElementById('local-media-title');
+      const audioEl = document.getElementById('local-audio');
+      const videoEl = document.getElementById('local-video');
+
+      container.classList.remove('hidden');
+      title.innerText = `▶ ${file.name}`;
+
+      if (file.type.startsWith('video/')) {
+        audioEl.classList.add('hidden');
+        audioEl.pause();
+        videoEl.src = localMediaUrl;
+        videoEl.classList.remove('hidden');
+      } else {
+        videoEl.classList.add('hidden');
+        videoEl.pause();
+        audioEl.src = localMediaUrl;
+        audioEl.classList.remove('hidden');
+      }
+    }
+
+    function loadEmbeddedMusic(e) {
+      e.preventDefault();
+      const url = document.getElementById('music-url-input').value.trim();
+      const container = document.getElementById('embed-player-container');
+      const iframe = document.getElementById('embed-iframe');
+
+      if (!url) return;
+
+      let embedUrl = "";
+
+      // Spotify
+      if (url.includes("spotify.com")) {
+        embedUrl = url.replace("open.spotify.com/", "open.spotify.com/embed/");
+      } 
+      // YouTube / YouTube Music
+      else if (url.includes("youtube.com") || url.includes("youtu.be")) {
+        let videoId = "";
+        if (url.includes("v=")) {
+          videoId = url.split("v=")[1].split("&")[0];
+        } else if (url.includes("youtu.be/")) {
+          videoId = url.split("youtu.be/")[1].split("?")[0];
+        }
+        if (videoId) {
+          embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+        }
+      }
+
+      if (embedUrl) {
+        iframe.src = embedUrl;
+        container.classList.remove('hidden');
+      } else {
+        alert("Por favor ingresa un enlace válido de Spotify o YouTube.");
+      }
+    }
+
+    // --- CAMBIO DE PESTAÑAS ---
+    function switchTab(tabName) {
+      const pdfTab = document.getElementById('view-pdf-tab');
+      const notesTab = document.getElementById('view-notes-tab');
+      const btnPdf = document.getElementById('tab-btn-pdf');
+      const btnNotes = document.getElementById('tab-btn-notes');
+
+      if (tabName === 'pdf') {
+        pdfTab.classList.remove('hidden');
+        notesTab.classList.add('hidden');
+        btnPdf.className = "px-4 py-2 rounded-xl text-xs font-bold transition bg-indigo-600 text-white shadow-sm flex items-center gap-2";
+        btnNotes.className = "px-4 py-2 rounded-xl text-xs font-bold transition bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-slate-200 flex items-center gap-2";
+      } else {
+        pdfTab.classList.add('hidden');
+        notesTab.classList.remove('hidden');
+        btnNotes.className = "px-4 py-2 rounded-xl text-xs font-bold transition bg-indigo-600 text-white shadow-sm flex items-center gap-2";
+        btnPdf.className = "px-4 py-2 rounded-xl text-xs font-bold transition bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-slate-200 flex items-center gap-2";
+      }
+    }
+
+    // --- FIREBASE LISTENERS ---
+    window.addEventListener('DOMContentLoaded', () => {
+      const checkAuthInterval = setInterval(() => {
+        if (window.firebaseAuth) {
+          clearInterval(checkAuthInterval);
+          initAuthListener();
+        }
+      }, 100);
+    });
+
+    function initAuthListener() {
+      const { auth, onAuthStateChanged } = window.firebaseAuth;
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          currentUser = user;
+          document.getElementById('auth-modal').classList.add('hidden');
+          document.getElementById('user-display').innerText = user.email;
+          initIndexedDB().then(() => {
+            loadUserData();
+          });
+        } else {
+          currentUser = null;
+          document.getElementById('auth-modal').classList.remove('hidden');
+          document.getElementById('user-display').innerText = 'Sin sesión';
+        }
+      });
+    }
+
+    function toggleAuthMode() {
+      isRegisterMode = !isRegisterMode;
+      document.getElementById('auth-title').innerText = isRegisterMode ? "Crear Cuenta Privada" : "Iniciar Sesión";
+      document.getElementById('auth-btn-submit').innerText = isRegisterMode ? "Registrarme" : "Entrar a mi Espacio";
+      document.getElementById('auth-btn-toggle').innerText = isRegisterMode ? "¿Ya tienes cuenta? Inicia sesión" : "¿No tienes cuenta? Regístrate gratis";
+    }
+
+    async function handleAuthSubmit(e) {
+      e.preventDefault();
+      const email = document.getElementById('auth-email').value;
+      const pass = document.getElementById('auth-password').value;
+      const errEl = document.getElementById('auth-error');
+      errEl.classList.add('hidden');
+
+      const { auth, signInWithEmailAndPassword, createUserWithEmailAndPassword } = window.firebaseAuth;
+
+      try {
+        if (isRegisterMode) {
+          await createUserWithEmailAndPassword(auth, email, pass);
+        } else {
+          await signInWithEmailAndPassword(auth, email, pass);
+        }
+      } catch (err) {
+        errEl.innerText = "Error: " + err.message;
+        errEl.classList.remove('hidden');
+      }
+    }
+
+    function logoutUser() {
+      const { auth, signOut } = window.firebaseAuth;
+      signOut(auth).then(() => {
+        location.reload();
+      });
+    }
+
+    // --- BASE DE DATOS LOCAL Y CARGA DE DATOS ---
+    function initIndexedDB() {
+      return new Promise((resolve, reject) => {
+        const request = indexedDB.open(DB_NAME, 1);
+        request.onupgradeneeded = (e) => {
+          const database = e.target.result;
+          if (!database.objectStoreNames.contains('user_books')) {
+            database.createObjectStore('user_books', { keyPath: 'id', autoIncrement: true });
+          }
+        };
+        request.onsuccess = (e) => {
+          db = e.target.result;
+          resolve(db);
+        };
+        request.onerror = (e) => reject(e.target.error);
+      });
+    }
+
+    function loadUserData() {
+      if (!currentUser) return;
+      const uid = currentUser.uid;
+
+      // Cargar Notas
+      loadNotesList();
+
+      // Cargar Flashcards
+      cards = JSON.parse(localStorage.getItem(`ac_cards_${uid}`)) || [];
+      renderCard();
+
+      // Cargar Rachas
+      streakData = JSON.parse(localStorage.getItem(`ac_streaks_${uid}`)) || [];
+      renderStreaks();
+
+      // Cargar Tareas
+      todoTasks = JSON.parse(localStorage.getItem(`ac_todos_${uid}`)) || [];
+      renderTodoList();
+
+      // Cargar Libros PDF
+      refreshLibraryList();
+    }
+
+    // --- GESTIÓN DE NOTAS MÚLTIPLES Y FORMATO ---
+    let userNotes = [];
+    let activeNoteId = null;
+
+    function loadNotesList() {
+      if (!currentUser) return;
+      userNotes = JSON.parse(localStorage.getItem(`ac_notes_list_${currentUser.uid}`)) || [
+        { id: 1, title: 'Nota General 1', content: '' }
+      ];
+      renderNotesSelect();
+      if (userNotes.length > 0) {
+        selectNote(userNotes[0].id);
+      }
+    }
+
+    function renderNotesSelect() {
+      const select = document.getElementById('notes-select');
+      select.innerHTML = '';
+      userNotes.forEach(n => {
+        const opt = document.createElement('option');
+        opt.value = n.id;
+        opt.textContent = n.title;
+        select.appendChild(opt);
+      });
+    }
+
+    function selectNote(noteId) {
+      activeNoteId = Number(noteId);
+      document.getElementById('notes-select').value = activeNoteId;
+      const note = userNotes.find(n => n.id === activeNoteId);
+      if (note) {
+        document.getElementById('notebook-editor').innerHTML = note.content;
+      }
+    }
+
+    function saveCurrentNoteContent() {
+      if (!currentUser || !activeNoteId) return;
+      const editor = document.getElementById('notebook-editor');
+      const noteIndex = userNotes.findIndex(n => n.id === activeNoteId);
+      if (noteIndex !== -1) {
+        userNotes[noteIndex].content = editor.innerHTML;
+        localStorage.setItem(`ac_notes_list_${currentUser.uid}`, JSON.stringify(userNotes));
+        
+        const status = document.getElementById('save-status');
+        status.innerText = "Guardando...";
+        setTimeout(() => {
+          status.innerText = "✓ Guardado automáticamente";
+        }, 400);
+      }
+    }
+
+    function createNewNote() {
+      const title = prompt('Nombre de la nueva libreta/nota:', `Nota ${userNotes.length + 1}`);
+      if (!title) return;
+      const newNote = { id: Date.now(), title, content: '' };
+      userNotes.push(newNote);
+      localStorage.setItem(`ac_notes_list_${currentUser.uid}`, JSON.stringify(userNotes));
+      renderNotesSelect();
+      selectNote(newNote.id);
+    }
+
+    function deleteCurrentNote() {
+      if (userNotes.length <= 1) {
+        alert('Debes conservar al menos una nota en tu espacio.');
+        return;
+      }
+      if (confirm('¿Eliminar esta libreta de notas?')) {
+        userNotes = userNotes.filter(n => n.id !== activeNoteId);
+        localStorage.setItem(`ac_notes_list_${currentUser.uid}`, JSON.stringify(userNotes));
+        renderNotesSelect();
+        selectNote(userNotes[0].id);
+      }
+    }
+
+    function exportCurrentNote() {
+      const note = userNotes.find(n => n.id === activeNoteId);
+      if (!note) return;
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = note.content;
+      const textContent = tempDiv.innerText || tempDiv.textContent || '';
+      
+      const blob = new Blob([textContent], { type: 'text/plain;charset=utf-8' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `${note.title.replace(/\s+/g, '_')}.txt`;
+      a.click();
+    }
+
+    function formatText(cmd, val = null) {
+      document.execCommand(cmd, false, val);
+      saveCurrentNoteContent();
+    }
+
+    // --- METAS DIARIAS (TO-DO LIST) ---
+    let todoTasks = [];
+
+    function renderTodoList() {
+      const listEl = document.getElementById('todo-list');
+      listEl.innerHTML = '';
+      
+      if (todoTasks.length === 0) {
+        listEl.innerHTML = '<p class="text-xs text-slate-500 text-center py-2">Sin metas anotadas hoy</p>';
+        updateTodoProgress();
+        return;
+      }
+
+      todoTasks.forEach((t, i) => {
+        listEl.innerHTML += `
+          <div class="flex items-center justify-between bg-slate-950 px-2.5 py-1.5 rounded-lg border border-slate-800 text-xs">
+            <label class="flex items-center gap-2 cursor-pointer flex-1">
+              <input type="checkbox" ${t.done ? 'checked' : ''} onchange="toggleTodoTask(${i})" class="accent-indigo-500 rounded">
+              <span class="${t.done ? 'line-through text-slate-500' : 'text-slate-200'}">${t.text}</span>
+            </label>
+            <button onclick="deleteTodoTask(${i})" class="text-slate-500 hover:text-rose-400 text-xs px-1">✕</button>
+          </div>
+        `;
+      });
+      updateTodoProgress();
+    }
+
+    function updateTodoProgress() {
+      if (todoTasks.length === 0) {
+        document.getElementById('todo-progress-bar').style.width = '0%';
+        document.getElementById('todo-progress-text').innerText = '0%';
+        return;
+      }
+      const doneCount = todoTasks.filter(t => t.done).length;
+      const pct = Math.round((doneCount / todoTasks.length) * 100);
+      document.getElementById('todo-progress-bar').style.width = `${pct}%`;
+      document.getElementById('todo-progress-text').innerText = `${pct}%`;
+    }
+
+    function addTodoTask(e) {
+      e.preventDefault();
+      const input = document.getElementById('todo-input');
+      const text = input.value.trim();
+      if (!text || !currentUser) return;
+
+      todoTasks.push({ text, done: false });
+      localStorage.setItem(`ac_todos_${currentUser.uid}`, JSON.stringify(todoTasks));
+      input.value = '';
+      renderTodoList();
+    }
+
+    function toggleTodoTask(idx) {
+      todoTasks[idx].done = !todoTasks[idx].done;
+      localStorage.setItem(`ac_todos_${currentUser.uid}`, JSON.stringify(todoTasks));
+      renderTodoList();
+    }
+
+    function deleteTodoTask(idx) {
+      todoTasks.splice(idx, 1);
+      localStorage.setItem(`ac_todos_${currentUser.uid}`, JSON.stringify(todoTasks));
+      renderTodoList();
+    }
+
+    // --- GESTIÓN DE PDFS ---
+    function saveBookToStorage(file) {
+      return new Promise((resolve, reject) => {
+        const transaction = db.transaction(['user_books'], 'readwrite');
+        const store = transaction.objectStore('user_books');
+        const bookData = {
+          userId: currentUser.uid,
+          name: file.name,
+          size: file.size,
+          data: file,
+          dateAdded: new Date().toISOString()
+        };
+        const request = store.add(bookData);
+        request.onsuccess = (e) => resolve(e.target.result);
+        request.onerror = (e) => reject(e.target.error);
+      });
+    }
+
+    async function refreshLibraryList() {
+      if (!currentUser || !db) return;
+      
+      const transaction = db.transaction(['user_books'], 'readonly');
+      const store = transaction.objectStore('user_books');
+      const request = store.getAll();
+
+      request.onsuccess = () => {
+        const allBooks = request.result || [];
+        const userBooks = allBooks.filter(b => b.userId === currentUser.uid);
+        
+        const select = document.getElementById('library-select');
+        select.innerHTML = '';
+
+        if (userBooks.length === 0) {
+          select.innerHTML = '<option value="">(Sin libros en tu espacio)</option>';
+          return;
         }
 
-        // Exportar Anki CSV
-        function exportFlashcards() {
-            const csv = `"¿Qué es la repetición espaciada?","Técnica de memorización basada en revisar conceptos en intervalos crecientes.","#estudio"\n"¿Qué es Anki?","Software de tarjetas de memoria basado en algoritmos de repaso.","#herramientas"`;
-            const blob = new Blob([csv], { type: 'text/csv' });
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.setAttribute('href', url);
-            a.setAttribute('download', 'flashcards_anki.csv');
-            a.click();
+        const defaultOpt = document.createElement('option');
+        defaultOpt.value = "";
+        defaultOpt.textContent = `-- Mis Libros (${userBooks.length}) --`;
+        select.appendChild(defaultOpt);
+
+        userBooks.forEach(b => {
+          const opt = document.createElement('option');
+          opt.value = b.id;
+          opt.textContent = `${b.name} (${(b.size / (1024*1024)).toFixed(1)} MB)`;
+          select.appendChild(opt);
+        });
+      };
+    }
+
+    async function handlePDFUpload(e) {
+      const file = e.target.files[0];
+      if (!file || !currentUser) return;
+
+      const newId = await saveBookToStorage(file);
+      await refreshLibraryList();
+      switchSavedBook(newId);
+    }
+
+    function switchSavedBook(bookId) {
+      if (!bookId) return;
+      const transaction = db.transaction(['user_books'], 'readonly');
+      const store = transaction.objectStore('user_books');
+      const request = store.get(Number(bookId));
+
+      request.onsuccess = () => {
+        const book = request.result;
+        if (book && book.userId === currentUser.uid) {
+          if (activeObjectUrl) URL.revokeObjectURL(activeObjectUrl);
+          activeObjectUrl = URL.createObjectURL(book.data);
+
+          const frame = document.getElementById('pdf-frame');
+          document.getElementById('pdf-placeholder').classList.add('hidden');
+          frame.src = activeObjectUrl;
+          frame.classList.remove('hidden');
         }
-    </script>
+      };
+    }
+
+    function deleteSelectedBook() {
+      const select = document.getElementById('library-select');
+      const bookId = select.value;
+      if (!bookId) return;
+
+      if (confirm('¿Eliminar este libro de tu cuenta?')) {
+        const transaction = db.transaction(['user_books'], 'readwrite');
+        const store = transaction.objectStore('user_books');
+        store.delete(Number(bookId));
+        transaction.oncomplete = () => {
+          document.getElementById('pdf-frame').src = '';
+          document.getElementById('pdf-frame').classList.add('hidden');
+          document.getElementById('pdf-placeholder').classList.remove('hidden');
+          refreshLibraryList();
+        };
+      }
+    }
+
+    function toggleFullscreen() {
+      const elem = document.getElementById('main-tab-container');
+      if (!document.fullscreenElement) {
+        elem.requestFullscreen();
+      } else {
+        document.exitFullscreen();
+      }
+    }
+
+    // --- RACHAS Y FLASHCARDS ---
+    let streakData = [];
+    let cards = [];
+    let currentIndex = 0;
+
+    function renderStreaks() {
+      const grid = document.getElementById('streak-grid');
+      document.getElementById('streak-count').innerText = `${streakData.length} días`;
+      grid.innerHTML = '';
+      const days = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
+      days.forEach((day, idx) => {
+        const isDone = streakData.includes(idx);
+        grid.innerHTML += `<div class="py-2 rounded-lg flex flex-col items-center justify-center border text-xs font-bold ${isDone ? 'bg-emerald-950 border-emerald-800 text-emerald-300' : 'bg-slate-950 border-slate-800 text-slate-500'}"><span>${day}</span><span>${isDone ? '🩺' : '•'}</span></div>`;
+      });
+    }
+
+    function markTodayStreak() {
+      if (!currentUser) return;
+      const todayIdx = (new Date().getDay() + 6) % 7;
+      if (!streakData.includes(todayIdx)) {
+        streakData.push(todayIdx);
+        localStorage.setItem(`ac_streaks_${currentUser.uid}`, JSON.stringify(streakData));
+        renderStreaks();
+      }
+    }
+
+    function renderCard() {
+      if (cards.length === 0) {
+        document.getElementById('card-question').innerText = "Sin tarjetas en tu cuenta";
+        document.getElementById('card-answer').innerText = "Agrega una nueva abajo";
+        document.getElementById('card-counter').innerText = "0 / 0";
+        return;
+      }
+      document.getElementById('card-question').innerText = cards[currentIndex].q;
+      document.getElementById('card-answer').innerText = cards[currentIndex].a;
+      document.getElementById('card-counter').innerText = `${currentIndex + 1} / ${cards.length}`;
+    }
+
+    function flipCard() {
+      const front = document.getElementById('card-front');
+      const back = document.getElementById('card-back');
+      front.classList.toggle('hide-card');
+      back.classList.toggle('hide-card');
+    }
+
+    function reviewCard(known) {
+      if (cards.length === 0) return;
+      if (!known) {
+        const current = cards.splice(currentIndex, 1)[0];
+        cards.push(current);
+      } else {
+        currentIndex = (currentIndex + 1) % cards.length;
+      }
+      flipCard();
+      renderCard();
+    }
+
+    function nextCard() {
+      if (cards.length === 0) return;
+      currentIndex = (currentIndex + 1) % cards.length;
+      renderCard();
+    }
+
+    function prevCard() {
+      if (cards.length === 0) return;
+      currentIndex = (currentIndex - 1 + cards.length) % cards.length;
+      renderCard();
+    }
+
+    function addCard(e) {
+      e.preventDefault();
+      if (!currentUser) return;
+      const q = document.getElementById('input-q').value.trim();
+      const a = document.getElementById('input-a').value.trim();
+      cards.push({ q, a });
+      localStorage.setItem(`ac_cards_${currentUser.uid}`, JSON.stringify(cards));
+      document.getElementById('input-q').value = '';
+      document.getElementById('input-a').value = '';
+      currentIndex = cards.length - 1;
+      renderCard();
+    }
+
+    function deleteCurrentCard() {
+      if (cards.length === 0 || !currentUser) return;
+      cards.splice(currentIndex, 1);
+      localStorage.setItem(`ac_cards_${currentUser.uid}`, JSON.stringify(cards));
+      if (currentIndex >= cards.length && currentIndex > 0) currentIndex--;
+      renderCard();
+    }
+  </script>
 </body>
 </html>
