@@ -123,7 +123,7 @@
   <!-- Contenido Principal -->
   <main class="max-w-7xl mx-auto px-4 py-6 flex-1 w-full grid grid-cols-1 lg:grid-cols-12 gap-6">
     
-    <!-- Columna Izquierda: Temporizador, Tareas, Sonidos, Rachas, Flashcards -->
+    <!-- Columna Izquierda: Temporizador, Reproductor de Música, Tareas, Rachas, Flashcards -->
     <div class="lg:col-span-4 space-y-6">
       
       <!-- Temporizador Funcional -->
@@ -160,39 +160,44 @@
         </div>
       </div>
 
-      <!-- NUEVO: Reproductor de Sonidos Ambientales -->
+      <!-- NUEVO REPRODUCTOR MULTIMEDIA PERSONAL (MP3/MP4, Spotify, YouTube) -->
       <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-sm space-y-3">
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-2">
-            <span class="text-base">🎧</span>
-            <h2 class="text-base font-bold text-slate-200">Ambiente de Estudio</h2>
+            <span class="text-base">🎵</span>
+            <h2 class="text-base font-bold text-slate-200">Música de Estudio</h2>
           </div>
-          <span id="audio-status" class="text-[10px] text-slate-400 font-mono">Pausado</span>
+          <span class="text-[10px] text-indigo-400 font-semibold">MP3/MP4, Spotify, YT</span>
         </div>
 
-        <div class="grid grid-cols-2 gap-2">
-          <button onclick="playAmbientSound('rain')" class="sound-btn bg-slate-950 border border-slate-800 hover:border-indigo-500 text-xs py-2 rounded-xl flex items-center justify-center gap-1.5 transition">
-            <span>🌧️</span> <span>Lluvia</span>
-          </button>
-          <button onclick="playAmbientSound('waves')" class="sound-btn bg-slate-950 border border-slate-800 hover:border-indigo-500 text-xs py-2 rounded-xl flex items-center justify-center gap-1.5 transition">
-            <span>🌊</span> <span>Olas</span>
-          </button>
-          <button onclick="playAmbientSound('cafe')" class="sound-btn bg-slate-950 border border-slate-800 hover:border-indigo-500 text-xs py-2 rounded-xl flex items-center justify-center gap-1.5 transition">
-            <span>☕</span> <span>Cafetería</span>
-          </button>
-          <button onclick="playAmbientSound('noise')" class="sound-btn bg-slate-950 border border-slate-800 hover:border-indigo-500 text-xs py-2 rounded-xl flex items-center justify-center gap-1.5 transition">
-            <span>📻</span> <span>Ruido Blanco</span>
-          </button>
+        <!-- Cargar Archivo Local MP3 / MP4 -->
+        <div class="space-y-2">
+          <label class="block w-full text-center bg-slate-950 hover:bg-slate-800 border border-slate-800 hover:border-indigo-500 text-xs text-slate-300 py-2 rounded-xl cursor-pointer transition font-medium">
+            <span>📁 Cargar MP3 / MP4 desde tu equipo</span>
+            <input type="file" id="media-file-input" accept="audio/*,video/*" onchange="handleLocalMediaUpload(event)" class="hidden">
+          </label>
+          <div id="local-player-container" class="hidden">
+            <p id="local-media-title" class="text-[11px] text-indigo-300 truncate font-semibold mb-1"></p>
+            <audio id="local-audio" controls class="w-full h-8 rounded-lg bg-slate-950 border border-slate-800"></audio>
+            <video id="local-video" controls class="w-full max-h-40 rounded-lg bg-slate-950 border border-slate-800 mt-1 hidden"></video>
+          </div>
         </div>
 
-        <div class="flex items-center justify-between pt-1 gap-2">
-          <span class="text-xs text-slate-400">Volumen:</span>
-          <input type="range" id="sound-volume" min="0" max="1" step="0.05" value="0.3" oninput="setAmbientVolume(this.value)" class="w-full accent-indigo-500 cursor-pointer">
-          <button onclick="stopAmbientSound()" class="bg-rose-950 text-rose-300 border border-rose-800 hover:bg-rose-900 text-xs px-2.5 py-1 rounded-lg transition">Detener</button>
+        <!-- Enlace de Spotify / YouTube Music -->
+        <div class="pt-2 border-t border-slate-800 space-y-2">
+          <form onsubmit="loadEmbeddedMusic(event)" class="flex gap-1.5">
+            <input type="text" id="music-url-input" placeholder="Enlace de Spotify o YouTube..." class="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-2.5 py-1.5 text-xs text-slate-100 focus:outline-none focus:border-indigo-500">
+            <button type="submit" class="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs px-2.5 py-1.5 rounded-xl transition">Cargar</button>
+          </form>
+
+          <!-- Reproductor Embebido Iframe -->
+          <div id="embed-player-container" class="hidden rounded-xl overflow-hidden border border-slate-800 bg-slate-950">
+            <iframe id="embed-iframe" class="w-full h-36 border-none" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+          </div>
         </div>
       </div>
 
-      <!-- NUEVO: Metas del Día (To-Do List) -->
+      <!-- Metas del Día (To-Do List) -->
       <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-sm space-y-3">
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-2">
@@ -437,78 +442,70 @@
       applyNewConfig();
     }
 
-    // --- REPRODUCTOR DE SONIDOS AMBIENTALES (WEB AUDIO API) ---
-    let audioCtx = null;
-    let currentSource = null;
-    let gainNode = null;
-    let currentSoundType = null;
+    // --- REPRODUCTOR MULTIMEDIA PERSONAL (MP3/MP4 & SPOTIFY/YOUTUBE) ---
+    let localMediaUrl = null;
 
-    function initAudio() {
-      if (!audioCtx) {
-        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        gainNode = audioCtx.createGain();
-        gainNode.gain.value = parseFloat(document.getElementById('sound-volume').value) || 0.3;
-        gainNode.connect(audioCtx.destination);
-      }
-      if (audioCtx.state === 'suspended') {
-        audioCtx.resume();
-      }
-    }
+    function handleLocalMediaUpload(e) {
+      const file = e.target.files[0];
+      if (!file) return;
 
-    function setAmbientVolume(val) {
-      if (gainNode) gainNode.gain.value = parseFloat(val);
-    }
+      if (localMediaUrl) URL.revokeObjectURL(localMediaUrl);
+      localMediaUrl = URL.createObjectURL(file);
 
-    function stopAmbientSound() {
-      if (currentSource) {
-        try { currentSource.stop(); } catch(e){}
-        currentSource = null;
-      }
-      currentSoundType = null;
-      document.getElementById('audio-status').innerText = 'Pausado';
-    }
+      const container = document.getElementById('local-player-container');
+      const title = document.getElementById('local-media-title');
+      const audioEl = document.getElementById('local-audio');
+      const videoEl = document.getElementById('local-video');
 
-    function playAmbientSound(type) {
-      initAudio();
-      stopAmbientSound();
-      currentSoundType = type;
+      container.classList.remove('hidden');
+      title.innerText = `▶ ${file.name}`;
 
-      const bufferSize = audioCtx.sampleRate * 2;
-      const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
-      const data = buffer.getChannelData(0);
-
-      for (let i = 0; i < bufferSize; i++) {
-        data[i] = Math.random() * 2 - 1;
-      }
-
-      const noiseSource = audioCtx.createBufferSource();
-      noiseSource.buffer = buffer;
-      noiseSource.loop = true;
-
-      let filter = audioCtx.createBiquadFilter();
-
-      if (type === 'rain') {
-        filter.type = 'lowpass';
-        filter.frequency.value = 1000;
-        document.getElementById('audio-status').innerText = 'Reproduciendo: Lluvia';
-      } else if (type === 'waves') {
-        filter.type = 'bandpass';
-        filter.frequency.value = 400;
-        document.getElementById('audio-status').innerText = 'Reproduciendo: Olas';
-      } else if (type === 'cafe') {
-        filter.type = 'lowpass';
-        filter.frequency.value = 600;
-        document.getElementById('audio-status').innerText = 'Reproduciendo: Café';
+      if (file.type.startsWith('video/')) {
+        audioEl.classList.add('hidden');
+        audioEl.pause();
+        videoEl.src = localMediaUrl;
+        videoEl.classList.remove('hidden');
       } else {
-        filter.type = 'lowpass';
-        filter.frequency.value = 3000;
-        document.getElementById('audio-status').innerText = 'Reproduciendo: Ruido Blanco';
+        videoEl.classList.add('hidden');
+        videoEl.pause();
+        audioEl.src = localMediaUrl;
+        audioEl.classList.remove('hidden');
+      }
+    }
+
+    function loadEmbeddedMusic(e) {
+      e.preventDefault();
+      const url = document.getElementById('music-url-input').value.trim();
+      const container = document.getElementById('embed-player-container');
+      const iframe = document.getElementById('embed-iframe');
+
+      if (!url) return;
+
+      let embedUrl = "";
+
+      // Spotify
+      if (url.includes("spotify.com")) {
+        embedUrl = url.replace("open.spotify.com/", "open.spotify.com/embed/");
+      } 
+      // YouTube / YouTube Music
+      else if (url.includes("youtube.com") || url.includes("youtu.be")) {
+        let videoId = "";
+        if (url.includes("v=")) {
+          videoId = url.split("v=")[1].split("&")[0];
+        } else if (url.includes("youtu.be/")) {
+          videoId = url.split("youtu.be/")[1].split("?")[0];
+        }
+        if (videoId) {
+          embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+        }
       }
 
-      noiseSource.connect(filter);
-      filter.connect(gainNode);
-      noiseSource.start();
-      currentSource = noiseSource;
+      if (embedUrl) {
+        iframe.src = embedUrl;
+        container.classList.remove('hidden');
+      } else {
+        alert("Por favor ingresa un enlace válido de Spotify o YouTube.");
+      }
     }
 
     // --- CAMBIO DE PESTAÑAS ---
@@ -946,11 +943,9 @@
     function reviewCard(known) {
       if (cards.length === 0) return;
       if (!known) {
-        // Poner la tarjeta actual al final del mazo para repetirla
         const current = cards.splice(currentIndex, 1)[0];
         cards.push(current);
       } else {
-        // Avanzar normalmente
         currentIndex = (currentIndex + 1) % cards.length;
       }
       flipCard();
