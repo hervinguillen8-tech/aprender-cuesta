@@ -3,30 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aprender Cuesta - Suite de Estudiantes</title>
+    <title>Aprender Cuesta - Suite Estudiantil & IA</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Mermaid.js para mapas mentales -->
-    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        brand: {
-                            50: '#f0fdf4',
-                            500: '#22c55e',
-                            600: '#16a34a',
-                            700: '#15803d',
-                        }
-                    }
-                }
-            }
-        }
-    </script>
     <style>
         .custom-scrollbar::-webkit-scrollbar {
             width: 6px;
@@ -63,21 +44,19 @@
             </div>
             <div>
                 <h1 class="font-bold text-lg leading-none tracking-tight text-white">Aprender Cuesta</h1>
-                <span class="text-xs text-slate-400 font-medium">Plataforma Integral de Estudio</span>
+                <span class="text-xs text-slate-400 font-medium">Estación de Trabajo & Asistente IA</span>
             </div>
         </div>
 
         <!-- CONTADORES Y POMODORO -->
         <div class="flex items-center gap-4">
-            <!-- Racha de Estudio -->
-            <div class="hidden sm:flex items-center gap-2 bg-slate-800/80 border border-slate-700/60 px-3 py-1.5 rounded-lg text-xs font-semibold text-amber-400">
-                <i class="fa-solid fa-fire text-sm text-amber-500 animate-pulse"></i>
+            <div class="hidden sm:flex items-center gap-2 bg-slate-800 border border-slate-700/60 px-3 py-1.5 rounded-lg text-xs font-semibold text-amber-400">
+                <i class="fa-solid fa-fire text-amber-500"></i>
                 <span id="streak-counter">7 Días de Racha</span>
             </div>
 
-            <!-- Temporizador Pomodoro -->
             <div class="flex items-center gap-3 bg-slate-800 border border-slate-700 px-3.5 py-1.5 rounded-lg">
-                <i class="fa-solid fa-clock text-emerald-400 text-sm"></i>
+                <i class="fa-solid fa-stopwatch text-emerald-400 text-sm"></i>
                 <span id="pomo-timer" class="font-mono text-sm font-bold text-slate-200">25:00</span>
                 <button id="pomo-btn" onclick="togglePomodoro()" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs px-2.5 py-1 rounded-md font-semibold transition">
                     Iniciar
@@ -92,35 +71,35 @@
         <!-- MENÚ LATERAL -->
         <aside class="w-64 bg-slate-900 border-r border-slate-800 flex flex-col justify-between shrink-0">
             <nav class="p-3 space-y-1 overflow-y-auto custom-scrollbar">
-                <div class="px-3 py-2 text-[10px] font-bold text-slate-500 uppercase tracking-wider">Módulos de Trabajo</div>
+                <div class="px-3 py-2 text-[10px] font-bold text-slate-500 uppercase tracking-wider">Módulos</div>
                 
-                <button onclick="navigate('tab-notebooks')" class="nav-item active w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition group">
-                    <i class="fa-solid fa-book-bookmark text-emerald-400 group-hover:scale-110 transition-transform"></i>
+                <button onclick="navigate('tab-notebooks', this)" class="nav-item bg-slate-800 text-white w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition">
+                    <i class="fa-solid fa-book-bookmark text-emerald-400"></i>
                     <span>Mis Cuadernos</span>
                 </button>
 
-                <button onclick="navigate('tab-flashcards')" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition group">
-                    <i class="fa-solid fa-layer-group text-purple-400 group-hover:scale-110 transition-transform"></i>
+                <button onclick="navigate('tab-flashcards', this)" class="nav-item text-slate-400 hover:bg-slate-800 hover:text-white w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition">
+                    <i class="fa-solid fa-layer-group text-purple-400"></i>
                     <span>Flashcards & Anki</span>
                 </button>
 
-                <button onclick="navigate('tab-ai-prompts')" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition group">
-                    <i class="fa-solid fa-wand-magic-sparkles text-amber-400 group-hover:scale-110 transition-transform"></i>
+                <button onclick="navigate('tab-ai-prompts', this)" class="nav-item text-slate-400 hover:bg-slate-800 hover:text-white w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition">
+                    <i class="fa-solid fa-wand-magic-sparkles text-amber-400"></i>
                     <span>Generadores IA</span>
                 </button>
 
-                <button onclick="navigate('tab-pdf-viewer')" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition group">
-                    <i class="fa-solid fa-file-pdf text-rose-400 group-hover:scale-110 transition-transform"></i>
+                <button onclick="navigate('tab-pdf-viewer', this)" class="nav-item text-slate-400 hover:bg-slate-800 hover:text-white w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition">
+                    <i class="fa-solid fa-file-pdf text-rose-400"></i>
                     <span>Lectores & PDF</span>
                 </button>
 
-                <button onclick="navigate('tab-media')" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition group">
-                    <i class="fa-solid fa-music text-blue-400 group-hover:scale-110 transition-transform"></i>
-                    <span>Estudio & Multimedia</span>
+                <button onclick="navigate('tab-media', this)" class="nav-item text-slate-400 hover:bg-slate-800 hover:text-white w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition">
+                    <i class="fa-solid fa-music text-blue-400"></i>
+                    <span>Estudio & Música</span>
                 </button>
 
-                <button onclick="navigate('tab-tasks')" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition group">
-                    <i class="fa-solid fa-list-check text-teal-400 group-hover:scale-110 transition-transform"></i>
+                <button onclick="navigate('tab-tasks', this)" class="nav-item text-slate-400 hover:bg-slate-800 hover:text-white w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition">
+                    <i class="fa-solid fa-list-check text-teal-400"></i>
                     <span>Planificador</span>
                 </button>
             </nav>
@@ -132,89 +111,72 @@
                     </div>
                     <div class="truncate">
                         <p class="text-xs font-semibold text-slate-200 truncate">Estudiante</p>
-                        <p class="text-[10px] text-slate-500">Modo Local Activo</p>
+                        <p class="text-[10px] text-slate-500">Almacenamiento Local</p>
                     </div>
                 </div>
             </div>
         </aside>
 
         <!-- ÁREA DE CONTENIDO -->
-        <main class="flex-1 bg-slate-950 overflow-y-auto custom-scrollbar p-6 relative">
+        <main class="flex-1 bg-slate-950 overflow-y-auto custom-scrollbar p-6">
 
-            <!-- TAB 1: MIS CUADERNOS -->
+            <!-- TAB 1: CUADERNOS -->
             <section id="tab-notebooks" class="tab-pane space-y-6">
                 <div class="flex justify-between items-center">
                     <div>
                         <h2 class="text-2xl font-bold text-white tracking-tight">Mis Cuadernos de Estudio</h2>
-                        <p class="text-xs text-slate-400">Organiza tus asignaturas y toma notas estructuradas.</p>
+                        <p class="text-xs text-slate-400">Toma notas estructuradas para tus materias.</p>
                     </div>
-                    <button onclick="createNotebook()" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs px-3.5 py-2 rounded-lg font-semibold transition flex items-center gap-2">
+                    <button onclick="addNotebook()" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs px-3.5 py-2 rounded-lg font-semibold transition flex items-center gap-2">
                         <i class="fa-solid fa-plus"></i> Nuevo Cuaderno
                     </button>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="notebooks-container">
-                    <!-- Cuaderno Demo 1 -->
-                    <div class="bg-slate-900 border border-slate-800 hover:border-slate-700 rounded-xl p-5 transition cursor-pointer space-y-3 group">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="notebooks-grid">
+                    <div class="bg-slate-900 border border-slate-800 hover:border-slate-700 rounded-xl p-5 transition cursor-pointer space-y-3">
                         <div class="flex justify-between items-start">
                             <span class="bg-emerald-950 text-emerald-400 text-[10px] font-bold px-2 py-0.5 rounded border border-emerald-800">STEM</span>
-                            <i class="fa-solid fa-ellipsis-vertical text-slate-600 group-hover:text-slate-400"></i>
                         </div>
                         <h3 class="font-bold text-white text-base">Matemáticas & Física</h3>
-                        <p class="text-xs text-slate-400 line-clamp-2">Ecuaciones diferenciales, cálculo vectorial y notas de laboratorio.</p>
-                        <div class="pt-2 border-t border-slate-800/80 flex justify-between items-center text-[11px] text-slate-500">
-                            <span>12 Notas</span>
-                            <span>Editado ayer</span>
-                        </div>
+                        <p class="text-xs text-slate-400">Apuntes de fórmulas, ejercicios de cálculo y notas de laboratorio.</p>
                     </div>
 
-                    <!-- Cuaderno Demo 2 -->
-                    <div class="bg-slate-900 border border-slate-800 hover:border-slate-700 rounded-xl p-5 transition cursor-pointer space-y-3 group">
+                    <div class="bg-slate-900 border border-slate-800 hover:border-slate-700 rounded-xl p-5 transition cursor-pointer space-y-3">
                         <div class="flex justify-between items-start">
                             <span class="bg-purple-950 text-purple-400 text-[10px] font-bold px-2 py-0.5 rounded border border-purple-800">Humanidades</span>
-                            <i class="fa-solid fa-ellipsis-vertical text-slate-600 group-hover:text-slate-400"></i>
                         </div>
-                        <h3 class="font-bold text-white text-base">Historia & Derecho</h3>
-                        <p class="text-xs text-slate-400 line-clamp-2">Resúmenes de lecturas, artículos constitucionales y fichas de fechas.</p>
-                        <div class="pt-2 border-t border-slate-800/80 flex justify-between items-center text-[11px] text-slate-500">
-                            <span>8 Notas</span>
-                            <span>Editado hace 3 días</span>
-                        </div>
+                        <h3 class="font-bold text-white text-base">Historia & Lecturas</h3>
+                        <p class="text-xs text-slate-400">Fichas técnicas, artículos y resúmenes para exámenes.</p>
                     </div>
                 </div>
             </section>
 
-            <!-- TAB 2: FLASHCARDS Y ANKI -->
+            <!-- TAB 2: FLASHCARDS -->
             <section id="tab-flashcards" class="tab-pane hidden space-y-6">
                 <div class="flex justify-between items-center">
                     <div>
-                        <h2 class="text-2xl font-bold text-white tracking-tight">Tarjetas de Repaso (Spaced Repetition)</h2>
-                        <p class="text-xs text-slate-400">Repasa tus fichas o exporta directamente a Anki.</p>
+                        <h2 class="text-2xl font-bold text-white tracking-tight">Repetición Espaciada (Flashcards)</h2>
+                        <p class="text-xs text-slate-400">Repasa tus fichas fijas o exporta tu mazo a Anki.</p>
                     </div>
-                    <div class="flex gap-2">
-                        <button onclick="exportAnkiCSV()" class="bg-purple-600 hover:bg-purple-500 text-white text-xs px-3.5 py-2 rounded-lg font-semibold transition flex items-center gap-2">
-                            <i class="fa-solid fa-file-export"></i> Exportar CSV (Anki)
-                        </button>
-                    </div>
+                    <button onclick="exportFlashcards()" class="bg-purple-600 hover:bg-purple-500 text-white text-xs px-3.5 py-2 rounded-lg font-semibold transition flex items-center gap-2">
+                        <i class="fa-solid fa-file-export"></i> Exportar a Anki (.CSV)
+                    </button>
                 </div>
 
-                <!-- Tarjeta interactiva -->
-                <div class="flex justify-center my-8">
-                    <div class="w-full max-w-lg h-64 perspective-1000 cursor-pointer" onclick="flipCard(this)">
+                <div class="flex justify-center my-10">
+                    <div class="w-full max-w-md h-60 perspective-1000 cursor-pointer" onclick="flipCard()">
                         <div id="flashcard-inner" class="relative w-full h-full duration-500 transform-style-3d bg-slate-900 border border-slate-800 rounded-2xl p-6 flex flex-col justify-between shadow-2xl">
-                            <!-- Anverso -->
                             <div class="absolute inset-0 p-6 flex flex-col justify-between backface-hidden bg-slate-900 rounded-2xl border border-slate-800">
-                                <span class="text-[10px] uppercase tracking-wider font-bold text-purple-400">Anverso (Pregunta)</span>
-                                <p class="text-lg font-medium text-white text-center my-auto" id="card-question">¿Cuál es el principio fundamental de la Repetición Espaciada?</p>
-                                <p class="text-[10px] text-slate-500 text-center">Haz clic para voltear</p>
+                                <span class="text-[10px] uppercase font-bold text-purple-400">Pregunta</span>
+                                <p class="text-base font-medium text-white text-center my-auto" id="card-q">¿Cuál es el objetivo principal de la repetición espaciada?</p>
+                                <p class="text-[10px] text-slate-500 text-center">Haz clic para voltear la tarjeta</p>
                             </div>
-                            <!-- Reverso -->
                             <div class="absolute inset-0 p-6 flex flex-col justify-between backface-hidden rotate-y-180 bg-slate-900 rounded-2xl border border-slate-800">
-                                <span class="text-[10px] uppercase tracking-wider font-bold text-emerald-400">Reverso (Respuesta)</span>
-                                <p class="text-sm text-slate-300 text-center my-auto" id="card-answer">Revisar la información en intervalos crecientes de tiempo para maximizar la retención en la memoria a largo plazo según la curva del olvido.</p>
+                                <span class="text-[10px] uppercase font-bold text-emerald-400">Respuesta</span>
+                                <p class="text-xs text-slate-300 text-center my-auto" id="card-a">Repasar la información en intervalos calculados de tiempo para combatir la curva del olvido y consolidar la memoria a largo plazo.</p>
                                 <div class="flex justify-center gap-2">
-                                    <button onclick="event.stopPropagation(); nextCard('diff');" class="bg-rose-900/50 hover:bg-rose-800 text-rose-300 text-[10px] px-3 py-1 rounded border border-rose-700">Difícil</button>
-                                    <button onclick="event.stopPropagation(); nextCard('good');" class="bg-emerald-900/50 hover:bg-emerald-800 text-emerald-300 text-[10px] px-3 py-1 rounded border border-emerald-700">Fácil</button>
+                                    <button onclick="event.stopPropagation(); alert('Programada para repasar mañana');" class="bg-rose-900/40 text-rose-300 text-[10px] px-3 py-1 rounded border border-rose-800">Difícil</button>
+                                    <button onclick="event.stopPropagation(); alert('Programada para repasar en 4 días');" class="bg-emerald-900/40 text-emerald-300 text-[10px] px-3 py-1 rounded border border-emerald-800">Fácil</button>
                                 </div>
                             </div>
                         </div>
@@ -225,60 +187,56 @@
             <!-- TAB 3: GENERADORES IA -->
             <section id="tab-ai-prompts" class="tab-pane hidden space-y-6">
                 <div>
-                    <h2 class="text-2xl font-bold text-white tracking-tight">Generadores e Integración con IA</h2>
-                    <p class="text-xs text-slate-400">Prompts maestros listos para copiar a tu modelo de IA preferido.</p>
+                    <h2 class="text-2xl font-bold text-white tracking-tight">Asistente de IA (Generadores)</h2>
+                    <p class="text-xs text-slate-400">Copia estos prompts para usarlos en ChatGPT, Gemini o Claude.</p>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-                    <!-- Prompt Anki -->
-                    <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-4">
+                    <!-- Flashcards CSV Prompt -->
+                    <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-3">
                         <div class="flex items-center justify-between">
                             <h3 class="font-bold text-white text-sm flex items-center gap-2">
-                                <i class="fa-solid fa-file-csv text-purple-400"></i> Generador de Anki CSV
+                                <i class="fa-solid fa-file-csv text-purple-400"></i> Generador Anki (CSV)
                             </h3>
                             <span class="text-[10px] bg-purple-950 text-purple-400 font-semibold px-2 py-0.5 rounded border border-purple-800">Flashcards</span>
                         </div>
-                        <p class="text-xs text-slate-400">Copia este prompt en ChatGPT/Gemini para convertir tus lecturas en un archivo importable por Anki.</p>
-                        <div class="bg-slate-950 border border-slate-800 rounded-lg p-3 relative">
-                            <pre id="prompt-anki-text" class="text-xs text-slate-300 font-mono whitespace-pre-wrap">Actúa como un pedagogo experto. Revisa el texto que te proporcionaré y genera un conjunto de flashcards en formato CSV puro (sin explicaciones adicionales, sin markdown).
-Formato: "Pregunta","Respuesta","Etiqueta"
-Reglas:
-1. Preguntas cortas e iterativas.
-2. Respuestas concretas (máx 2 frases).
-3. Etiqueta según la asignatura.
+                        <p class="text-xs text-slate-400">Genera tablas de preguntas y respuestas listas para importar.</p>
+                        <textarea id="p-anki" readonly class="w-full h-32 bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-xs font-mono text-slate-300 resize-none">Actúa como un profesor experto. Lee el texto adjunto y genera una lista de flashcards en formato CSV puro de 3 columnas: "Pregunta","Respuesta","Etiqueta".
 
-Texto:
-[PEGA TU TEXTO AQUÍ]</pre>
-                        </div>
-                        <button onclick="copyToClipboard('prompt-anki-text')" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs py-2 rounded-lg font-semibold border border-slate-700 transition flex items-center justify-center gap-2">
+Reglas:
+1. Preguntas directas y puntuales.
+2. Respuestas concisas (máximo 2 oraciones).
+3. Sin texto extra ni formato Markdown fuera de la tabla CSV.
+
+Texto a procesar:
+[PEGA AQUÍ TU TEXTO]</textarea>
+                        <button onclick="copyPrompt('p-anki')" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs py-2 rounded-lg font-semibold border border-slate-700 transition">
                             <i class="fa-regular fa-copy"></i> Copiar Prompt
                         </button>
                     </div>
 
-                    <!-- Prompt Mermaid -->
-                    <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-4">
+                    <!-- Mermaid Mindmaps Prompt -->
+                    <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-3">
                         <div class="flex items-center justify-between">
                             <h3 class="font-bold text-white text-sm flex items-center gap-2">
-                                <i class="fa-solid fa-diagram-project text-blue-400"></i> Mapas Mentales (Mermaid.js)
+                                <i class="fa-solid fa-diagram-project text-blue-400"></i> Mapas Mentales (Mermaid)
                             </h3>
                             <span class="text-[10px] bg-blue-950 text-blue-400 font-semibold px-2 py-0.5 rounded border border-blue-800">Esquemas</span>
                         </div>
-                        <p class="text-xs text-slate-400">Genera código de diagramas para renderizarlos o pegarlos en Notion/XMind.</p>
-                        <div class="bg-slate-950 border border-slate-800 rounded-lg p-3 relative">
-                            <pre id="prompt-mermaid-text" class="text-xs text-slate-300 font-mono whitespace-pre-wrap">Analiza el siguiente tema y crea un diagrama conceptual estructurado en código Mermaid.js usando la sintaxis `graph TD`.
+                        <p class="text-xs text-slate-400">Genera estructuras de diagramas visuales en código fuente.</p>
+                        <textarea id="p-mermaid" readonly class="w-full h-32 bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-xs font-mono text-slate-300 resize-none">Genera una estructura de mapa conceptual en código sintaxis Mermaid.js (graph TD) sobre el tema proporcionado.
 
-Nodos requeridos:
-- Concepto Principal
-- Sub-conceptos (Nivel 1)
-- Detalles y Ejemplos (Nivel 2)
+Estructura:
+- Nodo Central (Tema Principal)
+- Sub-nodos de Nivel 1 (Categorías)
+- Sub-nodos de Nivel 2 (Ejemplos o detalles)
 
-Proporciona únicamente el bloque de código Mermaid.
+Solo entrega el bloque de código Mermaid sin rodeos.
 
 Texto:
-[PEGA TU TEMA AQUÍ]</pre>
-                        </div>
-                        <button onclick="copyToClipboard('prompt-mermaid-text')" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs py-2 rounded-lg font-semibold border border-slate-700 transition flex items-center justify-center gap-2">
+[PEGA AQUÍ TU TEXTO]</textarea>
+                        <button onclick="copyPrompt('p-mermaid')" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs py-2 rounded-lg font-semibold border border-slate-700 transition">
                             <i class="fa-regular fa-copy"></i> Copiar Prompt
                         </button>
                     </div>
@@ -286,48 +244,43 @@ Texto:
                 </div>
             </section>
 
-            <!-- TAB 4: LECTOR PDF -->
+            <!-- TAB 4: VISOR PDF -->
             <section id="tab-pdf-viewer" class="tab-pane hidden space-y-6">
                 <div class="flex justify-between items-center">
                     <div>
-                        <h2 class="text-2xl font-bold text-white tracking-tight">Visor de PDF & Documentos</h2>
-                        <p class="text-xs text-slate-400">Carga tus libros o guías para estudiar en paralelo.</p>
+                        <h2 class="text-2xl font-bold text-white tracking-tight">Visor de PDF Integrado</h2>
+                        <p class="text-xs text-slate-400">Abre archivos de tu computadora para estudiar directo en la app.</p>
                     </div>
-                    <input type="file" id="pdf-input" accept="application/pdf" class="hidden" onchange="loadPDF(event)">
-                    <button onclick="document.getElementById('pdf-input').click()" class="bg-rose-600 hover:bg-rose-500 text-white text-xs px-3.5 py-2 rounded-lg font-semibold transition flex items-center gap-2">
-                        <i class="fa-solid fa-file-upload"></i> Abrir PDF Local
+                    <input type="file" id="pdf-file" accept="application/pdf" class="hidden" onchange="renderPDF(event)">
+                    <button onclick="document.getElementById('pdf-file').click()" class="bg-rose-600 hover:bg-rose-500 text-white text-xs px-3.5 py-2 rounded-lg font-semibold transition flex items-center gap-2">
+                        <i class="fa-solid fa-folder-open"></i> Seleccionar PDF
                     </button>
                 </div>
 
-                <div class="w-full h-[600px] bg-slate-900 border border-slate-800 rounded-xl flex items-center justify-center overflow-hidden" id="pdf-container">
-                    <div class="text-center space-y-3">
-                        <i class="fa-solid fa-file-pdf text-4xl text-slate-700"></i>
-                        <p class="text-xs text-slate-500">Ningún archivo PDF cargado actualmente.</p>
-                    </div>
+                <div id="pdf-view-area" class="w-full h-[550px] bg-slate-900 border border-slate-800 rounded-xl flex items-center justify-center overflow-hidden">
+                    <p class="text-xs text-slate-500">No hay ningún archivo PDF cargado.</p>
                 </div>
             </section>
 
             <!-- TAB 5: MULTIMEDIA -->
             <section id="tab-media" class="tab-pane hidden space-y-6">
                 <div>
-                    <h2 class="text-2xl font-bold text-white tracking-tight">Ambiente & Música de Estudio</h2>
-                    <p class="text-xs text-slate-400">Reproductor local y listas para mejorar la concentración.</p>
+                    <h2 class="text-2xl font-bold text-white tracking-tight">Música y Ambiente de Estudio</h2>
+                    <p class="text-xs text-slate-400">Escucha pistas locales o conecta tus listas preferidas.</p>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-4">
                         <h3 class="font-bold text-white text-sm flex items-center gap-2">
-                            <i class="fa-solid fa-compact-disc text-blue-400"></i> Audio Local (MP3)
+                            <i class="fa-solid fa-music text-blue-400"></i> Reproductor Local (MP3)
                         </h3>
-                        <audio id="main-audio" controls class="w-full">
-                            <source src="" type="audio/mpeg">
-                        </audio>
-                        <input type="file" accept="audio/*" onchange="loadAudio(event)" class="text-xs text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-slate-800 file:text-slate-300 hover:file:bg-slate-700">
+                        <audio id="audio-elem" controls class="w-full"></audio>
+                        <input type="file" accept="audio/*" onchange="playAudio(event)" class="text-xs text-slate-400">
                     </div>
 
                     <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-4">
                         <h3 class="font-bold text-white text-sm flex items-center gap-2">
-                            <i class="fa-brands fa-spotify text-emerald-400"></i> Spotify Embed
+                            <i class="fa-brands fa-spotify text-emerald-400"></i> Repositorio Lofi
                         </h3>
                         <iframe style="border-radius:12px" src="https://open.spotify.com/embed/playlist/37i9dQZF1DX8NTLI29SZaM?utm_source=generator&theme=0" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
                     </div>
@@ -336,24 +289,22 @@ Texto:
 
             <!-- TAB 6: PLANIFICADOR -->
             <section id="tab-tasks" class="tab-pane hidden space-y-6">
-                <div class="flex justify-between items-center">
-                    <div>
-                        <h2 class="text-2xl font-bold text-white tracking-tight">Planificador de Tareas</h2>
-                        <p class="text-xs text-slate-400">Seguimiento de entregas y pendientes del curso.</p>
-                    </div>
+                <div>
+                    <h2 class="text-2xl font-bold text-white tracking-tight">Planificador de Entregas</h2>
+                    <p class="text-xs text-slate-400">Lista simple de actividades pendientes.</p>
                 </div>
 
                 <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 max-w-xl space-y-4">
                     <div class="flex gap-2">
-                        <input type="text" id="task-input-field" placeholder="Nueva tarea..." class="flex-1 bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-emerald-500">
-                        <button onclick="addNewTask()" class="bg-teal-600 hover:bg-teal-500 text-white text-xs px-4 py-2 rounded-lg font-semibold transition">
+                        <input type="text" id="new-task-text" placeholder="Escribe una tarea..." class="flex-1 bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-emerald-500">
+                        <button onclick="createTask()" class="bg-teal-600 hover:bg-teal-500 text-white text-xs px-4 py-2 rounded-lg font-semibold transition">
                             Añadir
                         </button>
                     </div>
 
-                    <ul id="task-list-container" class="space-y-2">
+                    <ul id="tasks-container" class="space-y-2">
                         <li class="flex items-center justify-between bg-slate-950 p-3 rounded-lg border border-slate-800 text-xs">
-                            <span class="text-slate-300">Entregar avance de proyecto académico</span>
+                            <span class="text-slate-300">Generar mapa mental de Química</span>
                             <button onclick="this.parentElement.remove()" class="text-slate-500 hover:text-rose-400">
                                 <i class="fa-solid fa-trash"></i>
                             </button>
@@ -365,99 +316,119 @@ Texto:
         </main>
     </div>
 
-    <!-- SCRIPTS INTERACTIVOS -->
+    <!-- SCRIPTS EN JS PURO -->
     <script>
-        // NAVEGACIÓN
-        function navigate(tabId) {
-            document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.add('hidden'));
-            document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active', 'bg-slate-800', 'text-white'));
+        // Cambiar pestañas
+        function navigate(tabId, button) {
+            document.querySelectorAll('.tab-pane').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.nav-item').forEach(el => {
+                el.classList.remove('bg-slate-800', 'text-white');
+                el.classList.add('text-slate-400');
+            });
 
             document.getElementById(tabId).classList.remove('hidden');
-            event.currentTarget.classList.add('active', 'bg-slate-800', 'text-white');
+            button.classList.add('bg-slate-800', 'text-white');
+            button.classList.remove('text-slate-400');
         }
 
-        // COPIAR PROMPTS
-        function copyToClipboard(id) {
-            const text = document.getElementById(id).innerText;
-            navigator.clipboard.writeText(text).then(() => {
-                alert('¡Prompt copiado con éxito!');
-            });
+        // Voltear Flashcards
+        function flipCard() {
+            document.getElementById('flashcard-inner').classList.toggle('rotate-y-180');
         }
 
-        // FLASHCARDS
-        function flipCard(cardEl) {
-            const inner = document.getElementById('flashcard-inner');
-            inner.classList.toggle('rotate-y-180');
+        // Copiar Prompts
+        function copyPrompt(id) {
+            const txt = document.getElementById(id);
+            txt.select();
+            navigator.clipboard.writeText(txt.value);
+            alert('¡Prompt copiado al portapapeles!');
         }
 
-        function nextCard(type) {
-            const inner = document.getElementById('flashcard-inner');
-            inner.classList.remove('rotate-y-180');
-            setTimeout(() => {
-                document.getElementById('card-question').innerText = "¿Qué es el flujo de caja en finanzas personales?";
-                document.getElementById('card-answer').innerText = "Es el registro neto de los ingresos y egresos de dinero durante un período determinado.";
-            }, 300);
-        }
-
-        // TIMER POMODORO
-        let pomoInterval = null;
-        let pomoTime = 1500;
+        // Temporizador Pomodoro
+        let pTimer = null;
+        let pSeconds = 1500;
 
         function togglePomodoro() {
             const btn = document.getElementById('pomo-btn');
-            if (pomoInterval) {
-                clearInterval(pomoInterval);
-                pomoInterval = null;
+            if (pTimer) {
+                clearInterval(pTimer);
+                pTimer = null;
                 btn.innerText = "Iniciar";
                 btn.classList.replace('bg-rose-600', 'bg-emerald-600');
             } else {
                 btn.innerText = "Pausar";
                 btn.classList.replace('bg-emerald-600', 'bg-rose-600');
-                pomoInterval = setInterval(() => {
-                    pomoTime--;
-                    const m = String(Math.floor(pomoTime / 60)).padStart(2, '0');
-                    const s = String(pomoTime % 60).padStart(2, '0');
+                pTimer = setInterval(() => {
+                    pSeconds--;
+                    const m = String(Math.floor(pSeconds / 60)).padStart(2, '0');
+                    const s = String(pSeconds % 60).padStart(2, '0');
                     document.getElementById('pomo-timer').innerText = `${m}:${s}`;
-                    if (pomoTime <= 0) {
-                        clearInterval(pomoInterval);
-                        alert("¡Bloque de estudio finalizado!");
+                    if (pSeconds <= 0) {
+                        clearInterval(pTimer);
+                        alert("¡Tiempo de estudio concluido!");
                     }
                 }, 1000);
             }
         }
 
-        // CARGAR PDF
-        function loadPDF(e) {
+        // Cargar PDF
+        function renderPDF(e) {
             const file = e.target.files[0];
             if (file) {
                 const url = URL.createObjectURL(file);
-                document.getElementById('pdf-container').innerHTML = `<iframe src="${url}" class="w-full h-full border-none"></iframe>`;
+                document.getElementById('pdf-view-area').innerHTML = `<iframe src="${url}" class="w-full h-full border-0"></iframe>`;
             }
         }
 
-        // CARGAR AUDIO
-        function loadAudio(e) {
+        // Cargar Audio
+        function playAudio(e) {
             const file = e.target.files[0];
             if (file) {
-                const audio = document.getElementById('main-audio');
+                const audio = document.getElementById('audio-elem');
                 audio.src = URL.createObjectURL(file);
                 audio.play();
             }
         }
 
-        // TAREAS
-        function addNewTask() {
-            const input = document.getElementById('task-input-field');
+        // Crear Tareas
+        function createTask() {
+            const input = document.getElementById('new-task-text');
             if (!input.value.trim()) return;
-            const container = document.getElementById('task-list-container');
+            const ul = document.getElementById('tasks-container');
             const li = document.createElement('li');
             li.className = "flex items-center justify-between bg-slate-950 p-3 rounded-lg border border-slate-800 text-xs";
             li.innerHTML = `<span class="text-slate-300">${input.value}</span>
                 <button onclick="this.parentElement.remove()" class="text-slate-500 hover:text-rose-400">
                     <i class="fa-solid fa-trash"></i>
                 </button>`;
-            container.appendChild(li);
+            ul.appendChild(li);
             input.value = "";
+        }
+
+        // Crear Cuaderno Demo
+        function addNotebook() {
+            const title = prompt("Nombre del cuaderno:");
+            if (!title) return;
+            const grid = document.getElementById('notebooks-grid');
+            const card = document.createElement('div');
+            card.className = "bg-slate-900 border border-slate-800 hover:border-slate-700 rounded-xl p-5 transition cursor-pointer space-y-3";
+            card.innerHTML = `<div class="flex justify-between items-start">
+                <span class="bg-blue-950 text-blue-400 text-[10px] font-bold px-2 py-0.5 rounded border border-blue-800">General</span>
+            </div>
+            <h3 class="font-bold text-white text-base">${title}</h3>
+            <p class="text-xs text-slate-400">Nuevo cuaderno de notas listo para editar.</p>`;
+            grid.appendChild(card);
+        }
+
+        // Exportar Anki CSV
+        function exportFlashcards() {
+            const csv = `"¿Qué es la repetición espaciada?","Técnica de memorización basada en revisar conceptos en intervalos crecientes.","#estudio"\n"¿Qué es Anki?","Software de tarjetas de memoria basado en algoritmos de repaso.","#herramientas"`;
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.setAttribute('href', url);
+            a.setAttribute('download', 'flashcards_anki.csv');
+            a.click();
         }
     </script>
 </body>
