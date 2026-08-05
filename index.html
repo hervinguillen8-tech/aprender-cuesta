@@ -2,286 +2,352 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Guía de Integración: Estación de Estudio e Inteligencia Artificial</title>
-    <style>
-        @page {
-            size: A4;
-            margin: 15mm 12mm;
-            background-color: #f8fafc;
-        }
-
-        *, *::before, *::after {
-            box-sizing: border-box;
-        }
-
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-            color: #1e293b;
-            font-size: 10pt;
-            line-height: 1.5;
-            background-color: #f8fafc;
-        }
-
-        /* Header Banner */
-        .header-banner {
-            margin: -15mm -12mm 20px -12mm;
-            padding: 25px 15mm;
-            background: #1e3a8a;
-            color: #ffffff;
-            border-bottom: 4px solid #3b82f6;
-        }
-
-        .header-banner h1 {
-            margin: 0 0 6px 0;
-            font-size: 20pt;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-            color: #ffffff;
-        }
-
-        .header-banner p {
-            margin: 0;
-            font-size: 10.5pt;
-            color: #93c5fd;
-            font-weight: 300;
-        }
-
-        /* Section Headings */
-        h2 {
-            color: #1e3a8a;
-            font-size: 13pt;
-            font-weight: 700;
-            margin-top: 20px;
-            margin-bottom: 10px;
-            padding-left: 10px;
-            border-left: 4px solid #2563eb;
-            page-break-after: avoid;
-        }
-
-        h3 {
-            color: #0f172a;
-            font-size: 11pt;
-            font-weight: 600;
-            margin-top: 14px;
-            margin-bottom: 6px;
-            page-break-after: avoid;
-        }
-
-        p {
-            margin-top: 0;
-            margin-bottom: 8px;
-            text-align: justify;
-        }
-
-        ul, ol {
-            margin-top: 0;
-            margin-bottom: 10px;
-            padding-left: 20px;
-        }
-
-        li {
-            margin-bottom: 4px;
-        }
-
-        /* Highlight Cards & Prompt Boxes */
-        .card {
-            background-color: #ffffff;
-            border: 1px solid #e2e8f0;
-            border-radius: 6px;
-            padding: 12px 15px;
-            margin-bottom: 12px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-        }
-
-        .prompt-box {
-            background-color: #0f172a;
-            color: #f8fafc;
-            border-left: 4px solid #38bdf8;
-            border-radius: 4px;
-            padding: 10px 12px;
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 9pt;
-            line-height: 1.4;
-            margin: 8px 0 12px 0;
-            white-space: pre-wrap;
-        }
-
-        .badge {
-            display: inline-block;
-            background-color: #eff6ff;
-            color: #1d4ed8;
-            font-weight: 600;
-            font-size: 8.5pt;
-            padding: 2px 8px;
-            border-radius: 12px;
-            border: 1px solid #bfdbfe;
-            margin-bottom: 6px;
-        }
-
-        /* Tables */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 10px 0 14px 0;
-            background-color: #ffffff;
-            font-size: 9.5pt;
-        }
-
-        th {
-            background-color: #1e293b;
-            color: #ffffff;
-            font-weight: 600;
-            text-align: left;
-            padding: 8px 10px;
-            border: 1px solid #1e293b;
-        }
-
-        td {
-            padding: 8px 10px;
-            border: 1px solid #cbd5e1;
-            vertical-align: top;
-        }
-
-        tr:nth-child(even) td {
-            background-color: #f1f5f9;
-        }
-
-        .footer-note {
-            margin-top: 25px;
-            padding-top: 10px;
-            border-top: 1px solid #cbd5e1;
-            font-size: 8.5pt;
-            color: #64748b;
-            text-align: center;
-        }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aprender Cuesta - Estación de Estudio & IA</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Mermaid.js para renderizar Mapas Mentales -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.min.js"></script>
+    <script>mermaid.initialize({ startOnLoad: true, theme: 'forest' });</script>
 </head>
-<body>
+<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col font-sans">
 
-    <div class="header-banner">
-        <h1>Ecosistema de Estudio Inteligente + IA</h1>
-        <p>Plan Maestro y Guía de Herramientas para Estudiantes de Todo Nivel</p>
-    </div>
+    <!-- Header Principal -->
+    <header class="bg-slate-800 border-b border-slate-700 px-6 py-4 flex flex-wrap justify-between items-center gap-4">
+        <div class="flex items-center gap-3">
+            <i class="fa-solid fa-graduation-cap text-blue-500 text-3xl"></i>
+            <div>
+                <h1 class="text-xl font-bold tracking-wide text-white">Aprender Cuesta</h1>
+                <p class="text-xs text-slate-400">Suite de Productividad Escolar & Asistente IA</p>
+            </div>
+        </div>
 
-    <h2>1. Visión General del Sistema</h2>
-    <p>
-        Esta propuesta integra herramientas de software libre, plantillas académicas y flujos de trabajo optimizados con 
-        <b>Inteligencia Artificial</b> para transformar cualquier espacio de trabajo o cybercafé en un centro de alto rendimiento académico. 
-        El objetivo principal es reducir los tiempos de estudio repetitivo (como la creación manual de fichas de repaso) y elevar la calidad de la comprensión conceptual.
-    </p>
+        <!-- Widgets de Enfoque y Racha -->
+        <div class="flex items-center gap-6">
+            <!-- Racha -->
+            <div class="flex items-center gap-2 bg-slate-900/80 px-3 py-1.5 rounded-lg border border-slate-700">
+                <i class="fa-solid fa-fire text-amber-500"></i>
+                <span class="text-sm font-semibold" id="streak-count">5 Días Seguidos</span>
+            </div>
+            <!-- Reloj Pomodoro -->
+            <div class="flex items-center gap-3 bg-slate-900/80 px-4 py-1.5 rounded-lg border border-slate-700">
+                <i class="fa-solid fa-stopwatch text-blue-400"></i>
+                <span id="timer-display" class="font-mono text-lg font-bold text-blue-400">25:00</span>
+                <button id="timer-btn" onclick="toggleTimer()" class="bg-blue-600 hover:bg-blue-500 text-xs px-2 py-1 rounded font-semibold transition">Iniciar</button>
+            </div>
+        </div>
+    </header>
 
-    <h2>2. Módulo de IA: Generación Ultrarrápida de Flashcards</h2>
-    <p>
-        Las <i>flashcards</i> (tarjetas de memoria) basadas en la <b>Repetición Espaciada (Spaced Repetition)</b> son la técnica más efectiva comprobada por la ciencia para memorización a largo plazo (Anki, Quizlet). La IA permite automatizar su creación en segundos a partir de cualquier apuntes o PDF.
-    </p>
+    <!-- Layout Principal -->
+    <div class="flex flex-1 overflow-hidden">
 
-    <div class="card">
-        <span class="badge">PROMPT MAESTRO 1</span>
-        <h3>Conversión de Apuntes/PDF a Flashcards Formato CSV (Anki / Quizlet)</h3>
-        <p>Copia y pega este prompt junto con tu texto de estudio en la Inteligencia Artificial:</p>
-        <div class="prompt-box">Actúa como un tutor experto en pedagogía. Analiza el siguiente texto y extrae los conceptos clave, definiciones, fórmulas y preguntas de examen más probables. 
+        <!-- Barra Lateral de Navegación -->
+        <aside class="w-64 bg-slate-800/50 border-r border-slate-700 p-4 flex flex-col gap-2 shrink-0">
+            <button onclick="switchTab('tab-ia')" class="nav-btn active flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-700/60 text-slate-300 transition text-left">
+                <i class="fa-solid fa-wand-magic-sparkles text-purple-400"></i>
+                <span>Generadores IA</span>
+            </button>
+            <button onclick="switchTab('tab-herramientas')" class="nav-btn flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-700/60 text-slate-300 transition text-left">
+                <i class="fa-solid fa-toolbox text-emerald-400"></i>
+                <span>Recursos por Carrera</span>
+            </button>
+            <button onclick="switchTab('tab-media')" class="nav-btn flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-700/60 text-slate-300 transition text-left">
+                <i class="fa-solid fa-music text-pink-400"></i>
+                <span>Música & Ambiente</span>
+            </button>
+            <button onclick="switchTab('tab-tareas')" class="nav-btn flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-700/60 text-slate-300 transition text-left">
+                <i class="fa-solid fa-check-double text-amber-400"></i>
+                <span>Lista de Tareas</span>
+            </button>
+        </aside>
 
-Genera una lista de flashcards en formato CSV puro (separado por comas) con exactamente 3 columnas:
-"Pregunta","Respuesta","Etiqueta"
+        <!-- Contenido Dinámico -->
+        <main class="flex-1 overflow-y-auto p-6 bg-slate-900">
+
+            <!-- 1. SECCIÓN GENERADORES IA -->
+            <section id="tab-ia" class="tab-content block space-y-6">
+                <div>
+                    <h2 class="text-2xl font-bold text-white flex items-center gap-2">
+                        <i class="fa-solid fa-brain text-purple-400"></i> Asistente de Estudio con IA
+                    </h2>
+                    <p class="text-slate-400 text-sm">Genera materiales de repaso en segundos copiando estos formatos en ChatGPT, Claude o Gemini.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                    <!-- IA 1: Generador de Flashcards (Anki CSV) -->
+                    <div class="bg-slate-800 border border-slate-700 rounded-xl p-5 flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-center mb-3">
+                                <h3 class="font-bold text-lg text-purple-300 flex items-center gap-2">
+                                    <i class="fa-solid fa-cards-blank"></i> Flashcards Anki (CSV)
+                                </h3>
+                                <span class="bg-purple-900/50 text-purple-300 text-xs px-2.5 py-1 rounded-full border border-purple-700">Memorización</span>
+                            </div>
+                            <p class="text-xs text-slate-300 mb-4">Transforma apuntes o fragmentos de libros en tarjetas con formato listo para Anki o Quizlet.</p>
+                            <textarea id="prompt-flashcards" readonly class="w-full h-36 bg-slate-900 border border-slate-700 rounded-lg p-3 text-xs font-mono text-slate-300 focus:outline-none">Actúa como un tutor experto en pedagogía. Analiza el siguiente texto y extrae los conceptos clave. Genera una lista de flashcards en formato CSV puro (3 columnas: "Pregunta","Respuesta","Etiqueta"):
 
 Reglas:
-1. Las preguntas deben ser directas, claras y enfocadas en un solo concepto.
-2. Las respuestas deben ser concisas (máximo 2 oraciones).
-3. Agrega una etiqueta relevante (ej. #anatomia, #historia, #formula).
-4. No agregues texto introductorio ni explicaciones fuera del CSV.
+1. Preguntas directas y enfocadas.
+2. Respuestas concisas (máx 2 oraciones).
+3. Etiqueta según el tema.
 
-Texto de estudio:
-[PEGA AQUÍ TU TEXTO O RESUMEN]</div>
+Texto:
+[PEGA TU TEXTO AQUÍ]</textarea>
+                        </div>
+                        <button onclick="copyPrompt('prompt-flashcards')" class="mt-4 w-full bg-purple-600 hover:bg-purple-500 text-white text-sm font-semibold py-2 rounded-lg transition flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-copy"></i> Copiar Prompt para Flashcards
+                        </button>
+                    </div>
+
+                    <!-- IA 2: Creador de Mapas Mentales (Mermaid) -->
+                    <div class="bg-slate-800 border border-slate-700 rounded-xl p-5 flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-center mb-3">
+                                <h3 class="font-bold text-lg text-blue-300 flex items-center gap-2">
+                                    <i class="fa-solid fa-sitemap"></i> Mapas Mentales (Mermaid)
+                                </h3>
+                                <span class="bg-blue-900/50 text-blue-300 text-xs px-2.5 py-1 rounded-full border border-blue-700">Visual</span>
+                            </div>
+                            <p class="text-xs text-slate-300 mb-4">Crea diagramas de flujo y mapas conceptuales jerárquicos automáticos.</p>
+                            <textarea id="prompt-mermaid" readonly class="w-full h-36 bg-slate-900 border border-slate-700 rounded-lg p-3 text-xs font-mono text-slate-300 focus:outline-none">Actúa como especialista en aprendizaje visual. Lee el siguiente tema y genera únicamente un código de diagrama en sintaxis Mermaid (graph TD) con:
+- Nodo Central (Tema)
+- Sub-nodos Nivel 1 (Categorías)
+- Sub-nodos Nivel 2 (Ejemplos o detalles)
+
+Texto:
+[PEGA TU TEXTO AQUÍ]</textarea>
+                        </div>
+                        <button onclick="copyPrompt('prompt-mermaid')" class="mt-4 w-full bg-blue-600 hover:bg-blue-500 text-white text-sm font-semibold py-2 rounded-lg transition flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-copy"></i> Copiar Prompt para Mapas Mentales
+                        </button>
+                    </div>
+
+                    <!-- IA 3: Método Feynman (Explicador Simple) -->
+                    <div class="bg-slate-800 border border-slate-700 rounded-xl p-5 flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-center mb-3">
+                                <h3 class="font-bold text-lg text-emerald-300 flex items-center gap-2">
+                                    <i class="fa-solid fa-lightbulb"></i> Método Feynman
+                                </h3>
+                                <span class="bg-emerald-900/50 text-emerald-300 text-xs px-2.5 py-1 rounded-full border border-emerald-700">Comprensión</span>
+                            </div>
+                            <p class="text-xs text-slate-300 mb-4">Pide a la IA que te explique un tema complejo de forma sumamente sencilla con analogías cotidianas.</p>
+                            <textarea id="prompt-feynman" readonly class="w-full h-28 bg-slate-900 border border-slate-700 rounded-lg p-3 text-xs font-mono text-slate-300 focus:outline-none">Explícame el concepto de [INSERTAR TEMA COMPLEJO] utilizando el Método Feynman:
+1. Usa lenguaje sencillo sin modismos técnicos innecesarios.
+2. Agrega una analogía del día a día para entender la idea central.
+3. Resume la idea en 3 puntos clave.</textarea>
+                        </div>
+                        <button onclick="copyPrompt('prompt-feynman')" class="mt-4 w-full bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-semibold py-2 rounded-lg transition flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-copy"></i> Copiar Prompt Feynman
+                        </button>
+                    </div>
+
+                    <!-- IA 4: Simulador de Exámenes -->
+                    <div class="bg-slate-800 border border-slate-700 rounded-xl p-5 flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-center mb-3">
+                                <h3 class="font-bold text-lg text-amber-300 flex items-center gap-2">
+                                    <i class="fa-solid fa-file-pen"></i> Simulador de Quiz / Examen
+                                </h3>
+                                <span class="bg-amber-900/50 text-amber-300 text-xs px-2.5 py-1 rounded-full border border-amber-700">Evaluación</span>
+                            </div>
+                            <p class="text-xs text-slate-300 mb-4">Genera exámenes de práctica con retroalimentación inmediata para medir tu nivel.</p>
+                            <textarea id="prompt-quiz" readonly class="w-full h-28 bg-slate-900 border border-slate-700 rounded-lg p-3 text-xs font-mono text-slate-300 focus:outline-none">Genera un examen de práctica de 5 preguntas sobre [TEMA] (mezclando opción múltiple y respuesta corta). 
+No incluyas las respuestas al inicio; colócalas al final bajo la etiqueta "CLAVE DE RESPUESTAS CON EXPLICACIÓN".</textarea>
+                        </div>
+                        <button onclick="copyPrompt('prompt-quiz')" class="mt-4 w-full bg-amber-600 hover:bg-amber-500 text-white text-sm font-semibold py-2 rounded-lg transition flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-copy"></i> Copiar Prompt de Quiz
+                        </button>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- 2. SECCIÓN HERRAMIENTAS POR CARRERA -->
+            <section id="tab-herramientas" class="tab-content hidden space-y-6">
+                <div>
+                    <h2 class="text-2xl font-bold text-white flex items-center gap-2">
+                        <i class="fa-solid fa-shapes text-emerald-400"></i> Catálogo de Herramientas por Especialidad
+                    </h2>
+                    <p class="text-slate-400 text-sm">Recursos recomendados para potenciar tus áreas de conocimiento.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+                    <!-- STEM -->
+                    <div class="bg-slate-800 border border-slate-700 rounded-xl p-5">
+                        <h3 class="font-bold text-lg text-blue-400 mb-3 flex items-center gap-2">
+                            <i class="fa-solid fa-calculator"></i> STEM & Ciencias
+                        </h3>
+                        <ul class="text-xs space-y-2 text-slate-300">
+                            <li class="bg-slate-900 p-2 rounded border border-slate-700"><b>GeoGebra:</b> Graficación y cálculo simbólico.</li>
+                            <li class="bg-slate-900 p-2 rounded border border-slate-700"><b>VS Code:</b> Entorno ligero de programación.</li>
+                            <li class="bg-slate-900 p-2 rounded border border-slate-700"><b>PhET Interactive:</b> Simulaciones de física y química.</li>
+                        </ul>
+                    </div>
+
+                    <!-- Humanidades -->
+                    <div class="bg-slate-800 border border-slate-700 rounded-xl p-5">
+                        <h3 class="font-bold text-lg text-amber-400 mb-3 flex items-center gap-2">
+                            <i class="fa-solid fa-book-bookmark"></i> Humanidades & Derecho
+                        </h3>
+                        <ul class="text-xs space-y-2 text-slate-300">
+                            <li class="bg-slate-900 p-2 rounded border border-slate-700"><b>Zotero / Mendeley:</b> Gestores de citas bibliográficas.</li>
+                            <li class="bg-slate-900 p-2 rounded border border-slate-700"><b>Lectores TTS:</b> Conversión de PDF a audio.</li>
+                            <li class="bg-slate-900 p-2 rounded border border-slate-700"><b>Formatos APA/IEEE:</b> Plantillas de redacción formal.</li>
+                        </ul>
+                    </div>
+
+                    <!-- Arte y Diseño -->
+                    <div class="bg-slate-800 border border-slate-700 rounded-xl p-5">
+                        <h3 class="font-bold text-lg text-pink-400 mb-3 flex items-center gap-2">
+                            <i class="fa-solid fa-palette"></i> Diseño & Arte
+                        </h3>
+                        <ul class="text-xs space-y-2 text-slate-300">
+                            <li class="bg-slate-900 p-2 rounded border border-slate-700"><b>Krita / Inkscape:</b> Ilustración digital y diseño vectorial.</li>
+                            <li class="bg-slate-900 p-2 rounded border border-slate-700"><b>Canva:</b> Maquetación rápida de proyectos.</li>
+                            <li class="bg-slate-900 p-2 rounded border border-slate-700"><b>Unsplash / Pexels:</b> Bancos de imágenes libres.</li>
+                        </ul>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- 3. SECCIÓN REPRODUCTOR DE MÚSICA & AMBIENTE -->
+            <section id="tab-media" class="tab-content hidden space-y-6">
+                <div>
+                    <h2 class="text-2xl font-bold text-white flex items-center gap-2">
+                        <i class="fa-solid fa-headphones text-pink-400"></i> Reproductor de Enfoque
+                    </h2>
+                    <p class="text-slate-400 text-sm">Escucha tu música local o listas integradas para concentración.</p>
+                </div>
+
+                <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 max-w-xl">
+                    <div class="flex items-center gap-4 mb-4">
+                        <div class="w-16 h-16 bg-pink-900/50 text-pink-400 rounded-lg flex items-center justify-center text-2xl border border-pink-700">
+                            <i class="fa-solid fa-music"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-white" id="audio-title">Música Relajante / Lofi</h3>
+                            <p class="text-xs text-slate-400">Ambiente para estudio profundo</p>
+                        </div>
+                    </div>
+
+                    <!-- Controles -->
+                    <audio id="audio-player" class="w-full mb-4" controls>
+                        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+                        Tu navegador no soporta el reproductor.
+                    </audio>
+
+                    <div class="flex gap-2">
+                        <label class="cursor-pointer bg-slate-700 hover:bg-slate-600 text-xs px-3 py-2 rounded-lg font-semibold text-white transition flex items-center gap-2">
+                            <i class="fa-solid fa-upload"></i> Cargar MP3 Local
+                            <input type="file" accept="audio/*" class="hidden" onchange="loadLocalAudio(event)">
+                        </label>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 4. SECCIÓN TAREAS -->
+            <section id="tab-tareas" class="tab-content hidden space-y-6">
+                <div>
+                    <h2 class="text-2xl font-bold text-white flex items-center gap-2">
+                        <i class="fa-solid fa-list-check text-amber-400"></i> Gestor de Pendientes
+                    </h2>
+                    <p class="text-slate-400 text-sm">Organiza tus entregables del semestre.</p>
+                </div>
+
+                <div class="bg-slate-800 border border-slate-700 rounded-xl p-5 max-w-xl">
+                    <div class="flex gap-2 mb-4">
+                        <input type="text" id="task-input" placeholder="Agregar nueva tarea..." class="flex-1 bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-blue-500">
+                        <button onclick="addTask()" class="bg-amber-600 hover:bg-amber-500 text-white px-4 py-2 rounded-lg text-sm font-semibold transition">Agregar</button>
+                    </div>
+                    <ul id="task-list" class="space-y-2">
+                        <li class="flex justify-between items-center bg-slate-900 p-3 rounded-lg border border-slate-700 text-sm">
+                            <span>Crear flashcards de Anatomía</span>
+                            <button onclick="this.parentElement.remove()" class="text-red-400 hover:text-red-300"><i class="fa-solid fa-trash"></i></button>
+                        </li>
+                    </ul>
+                </div>
+            </section>
+
+        </main>
     </div>
 
-    <div class="card">
-        <span class="badge">PROMPT MAESTRO 2</span>
-        <h3>Flashcards de Diagnóstico / Caso Práctico (Nivel Universitario / Técnico)</h3>
-        <div class="prompt-box">A partir del tema [INSERTAR TEMA], genera 10 tarjetas de preguntas tipo caso práctico o problema de aplicación.
-Formato:
-- Anverso: Escenario o problema corto.
-- Reverso: Solución paso a paso + concepto clave aplicado.</div>
-    </div>
+    <!-- Scripts de Interacción UI -->
+    <script>
+        // Navegación por pestañas
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('bg-slate-700', 'text-white'));
+            
+            document.getElementById(tabId).classList.remove('hidden');
+            event.currentTarget.classList.add('bg-slate-700', 'text-white');
+        }
 
-    <h2>3. Módulo de IA: Creación de Mapas Mentales y Esquemas Visuales</h2>
-    <p>
-        Para los estudiantes de aprendizaje visual, la IA permite estructurar grandes volúmenes de información en jerarquías lógicas y códigos compatibles con editores visuales automáticos (como Mermaid.js, XMind o CmapTools).
-    </p>
+        // Copiar Prompts
+        function copyPrompt(elementId) {
+            const textarea = document.getElementById(elementId);
+            textarea.select();
+            document.execCommand('copy');
+            alert('¡Prompt copiado al portapapeles!');
+        }
 
-    <div class="card">
-        <span class="badge">PROMPT MAESTRO 3</span>
-        <h3>Generador de Estructura de Mapa Mental en Código Mermaid.js</h3>
-        <div class="prompt-box">Actúa como un especialista en aprendizaje visual. Lee el siguiente tema y crea un código de diagrama de flujo / mapa mental usando sintaxis Mermaid (graph TD).
+        // Temporizador Pomodoro Simplificado
+        let timerSeconds = 1500;
+        let timerInterval = null;
 
-Estructura requerida:
-- Nodo Central: Nombre del Tema Principal.
-- Sub-nodos de Nivel 1: Ramas o Categorías Principales.
-- Sub-nodos de Nivel 2: Conceptos Clave, Fórmulas o Ejemplos.
+        function toggleTimer() {
+            const btn = document.getElementById('timer-btn');
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+                btn.innerText = 'Iniciar';
+                btn.classList.replace('bg-red-600', 'bg-blue-600');
+            } else {
+                btn.innerText = 'Pausar';
+                btn.classList.replace('bg-blue-600', 'bg-red-600');
+                timerInterval = setInterval(() => {
+                    if (timerSeconds > 0) {
+                        timerSeconds--;
+                        const mins = String(Math.floor(timerSeconds / 60)).padStart(2, '0');
+                        const secs = String(timerSeconds % 60).padStart(2, '0');
+                        document.getElementById('timer-display').innerText = `${mins}:${secs}`;
+                    } else {
+                        clearInterval(timerInterval);
+                        alert('¡Tiempo de estudio finalizado!');
+                    }
+                }, 1000);
+            }
+        }
 
-Proporciona únicamente el bloque de código Mermaid sin rodeos para copiar y pegar directamente en mermaid.live o Notion.
+        // Cargar Audio Local
+        function loadLocalAudio(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const player = document.getElementById('audio-player');
+                player.src = URL.createObjectURL(file);
+                document.getElementById('audio-title').innerText = file.name;
+                player.play();
+            }
+        }
 
-Texto a diagramar:
-[PEGA TU TEXTO AQUÍ]</div>
-    </div>
-
-    <div class="card">
-        <span class="badge">PROMPT MAESTRO 4</span>
-        <h3>Descomposición Jerárquica para XMind / Canva</h3>
-        <div class="prompt-box">Organiza el tema [INSERTAR TEMA] en un esquema multinivel (Listas con sangría de viñetas) optimizado para copiar a herramientas de mapas conceptuales.
-- Tema Principal
-  -- Gran Rama 1
-     --- Detalle A (Definición corta)
-     --- Detalle B (Ejemplo clave)
-  -- Gran Rama 2
-     --- Detalle C</div>
-    </div>
-
-    <h2>4. Catálogo de Herramientas por Especialidad Académica</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>Área / Perfil</th>
-                <th>Herramientas Recomendadas</th>
-                <th>Uso Principal en la Estación</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td><b>STEM (Ingeniería, Ciencias, Cómputo)</b></td>
-                <td>GeoGebra, VS Code, Octave, PhET Interactive</td>
-                <td>Cálculo, graficación, simulaciones de física/química y programación.</td>
-            </tr>
-            <tr>
-                <td><b>Humanidades y Derecho</b></td>
-                <td>Zotero, Mendeley, Lectores TTS, DLE</td>
-                <td>Gestión de bibliografía, lecturas guiadas por audio y redacción formal.</td>
-            </tr>
-            <tr>
-                <td><b>Diseño, Arte y Fotografía</b></td>
-                <td>Krita, Inkscape, Canva, Unsplash</td>
-                <td>Edición vectorial, dibujo digital, maquetación e ilustración.</td>
-            </tr>
-            <tr>
-                <td><b>General / Todo Estudiante</b></td>
-                <td>Anki, XMind, PDF24 Tools, Pomodoro Timer</td>
-                <td>Memorización espaciada, mapas mentales, gestión de PDF y enfoque.</td>
-            </tr>
-        </tbody>
-    </table>
-
-    <h2>5. Productividad y Plantillas Académicas Incluidas</h2>
-    <ul>
-        <li><b>Formato Normalizado de Trabajos:</b> Plantillas con estilos prediseñados en normas APA (7ma Edición), IEEE para ingeniería y Vancouver para área médica.</li>
-        <li><b>Curriculum Vitae Estudiantil:</b> Modelos de CV limpios en PDF/Word diseñados para solicitudes de becas, servicio social o primer empleo.</li>
-        <li><b>Convertidor Universal de Archivos:</b> Accesos rápidos a utilidades locales/web para unir, comprimir, convertir PDF a Word y extraer texto de imágenes (OCR).</li>
-        <li><b>Modo Enfoque Pomodoro:</b> Widget integrado para bloques de trabajo de 25 minutos con 5 minutos de pausa activa para maximizar la retención.</li>
-    </ul>
-
-    <div class="footer-note">
-        Diseñado para impulsar el aprendizaje eficiente y accesible • Estación de Estudio Inteligente
-    </div>
-
+        // Agregar Tarea
+        function addTask() {
+            const input = document.getElementById('task-input');
+            if (input.value.trim() === '') return;
+            
+            const ul = document.getElementById('task-list');
+            const li = document.createElement('li');
+            li.className = "flex justify-between items-center bg-slate-900 p-3 rounded-lg border border-slate-700 text-sm";
+            li.innerHTML = `<span>${input.value}</span>
+                <button onclick="this.parentElement.remove()" class="text-red-400 hover:text-red-300"><i class="fa-solid fa-trash"></i></button>`;
+            ul.appendChild(li);
+            input.value = '';
+        }
+    </script>
 </body>
 </html>
