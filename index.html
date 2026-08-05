@@ -14,15 +14,15 @@
       pointer-events: none;
       display: block;
     }
-    #books-section:-webkit-full-screen {
+    #main-tab-container:-webkit-full-screen {
       width: 100vw; height: 100vh; border-radius: 0; padding: 1rem; background-color: #020617;
     }
-    #books-section:fullscreen {
+    #main-tab-container:fullscreen {
       width: 100vw; height: 100vh; border-radius: 0; padding: 1rem; background-color: #020617;
     }
   </style>
 
-  <!-- Firebase SDK (Módulos de Autenticación con tus claves) -->
+  <!-- Firebase SDK -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { 
@@ -33,7 +33,6 @@
       onAuthStateChanged 
     } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-    // Credenciales de tu proyecto "aprener-cuesta"
     const firebaseConfig = {
       apiKey: "AIzaSyDDmvbLtznJVmc_suQbNitYQ_FTAuH6uiQ",
       authDomain: "aprener-cuesta.firebaseapp.com",
@@ -58,7 +57,7 @@
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen font-sans flex flex-col selection:bg-indigo-600">
 
-  <!-- MODAL DE AUTENTICACIÓN (LOGIN / REGISTRO) -->
+  <!-- MODAL DE AUTENTICACIÓN -->
   <div id="auth-modal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-[100] flex items-center justify-center p-4">
     <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-5">
       <div class="text-center space-y-1">
@@ -111,7 +110,6 @@
           <span class="font-bold text-slate-200 text-xs" id="streak-count">0 días</span>
         </div>
         
-        <!-- Usuario Activo & Logout -->
         <div class="flex items-center gap-2 bg-slate-950 px-3 py-1.5 rounded-lg border border-slate-800">
           <span class="text-xs text-slate-300 font-medium truncate max-w-[120px]" id="user-display">Cargando...</span>
           <button onclick="logoutUser()" class="text-xs bg-rose-950 text-rose-300 border border-rose-800 hover:bg-rose-900 px-2 py-0.5 rounded-md transition">
@@ -128,7 +126,7 @@
     <!-- Columna Izquierda: Temporizador, Rachas, Flashcards -->
     <div class="lg:col-span-4 space-y-6">
       
-      <!-- Temporizador -->
+      <!-- Temporizador Funcional -->
       <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-sm">
         <div class="flex items-center justify-between mb-3">
           <div class="flex items-center gap-2">
@@ -136,7 +134,7 @@
             <h2 class="text-base font-bold text-slate-200">Bloque de Estudio</h2>
           </div>
           <div class="flex items-center gap-1">
-            <input type="number" id="input-hours" min="0.5" max="24" step="0.5" value="6" 
+            <input type="number" id="input-hours" min="0.1" max="24" step="0.5" value="6" 
                    class="w-14 bg-slate-950 border border-slate-700 rounded-lg text-center text-xs py-1 text-slate-200 focus:outline-none focus:border-indigo-500">
             <span class="text-xs text-slate-400 font-semibold">hrs</span>
             <button onclick="applyNewConfig()" class="bg-indigo-950 text-indigo-300 border border-indigo-800 hover:bg-indigo-900 text-xs px-2 py-1 rounded-lg transition ml-1">
@@ -149,7 +147,7 @@
           <div class="text-4xl font-mono font-bold text-indigo-400 tracking-wider mb-2" id="timer-display">
             06:00:00
           </div>
-          <p class="text-xs text-slate-400 mb-3">Aviso de descanso cada 30 min</p>
+          <p class="text-xs text-slate-400 mb-3">Aviso de descanso automático cada 30 min</p>
           
           <div class="flex justify-center gap-2">
             <button id="btn-start" onclick="toggleTimer()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold px-5 py-2 rounded-xl text-sm transition">
@@ -212,61 +210,72 @@
 
     </div>
 
-    <!-- Columna Derecha: APARTADO ÚNICO "LIBROS Y APUNTES PRIVADOS" -->
+    <!-- Columna Derecha: SISTEMA DE PESTAÑAS (PDF Y APUNTES DEDICADOS) -->
     <div class="lg:col-span-8">
-      <div id="books-section" class="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-sm space-y-3 flex flex-col h-[820px] transition-all">
+      <div id="main-tab-container" class="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-sm space-y-4 flex flex-col h-[820px] transition-all">
         
-        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-3">
+        <!-- Barra Superior de Pestañas -->
+        <div class="flex items-center justify-between border-b border-slate-800 pb-3">
           <div class="flex items-center gap-2">
-            <span class="text-2xl">📚</span>
-            <div>
-              <h2 class="text-base font-bold text-slate-100 truncate max-w-[200px] sm:max-w-xs" id="book-title">Mi Biblioteca Personal</h2>
-              <p class="text-[11px] text-slate-400">Tus PDFs y notas están completamente aislados de otros usuarios</p>
-            </div>
-          </div>
-          
-          <div class="flex items-center gap-2">
-            <button onclick="toggleFullscreen()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs px-2.5 py-1.5 rounded-xl transition flex items-center gap-1">
-              <span id="fullscreen-icon">⛶</span>
-              <span class="hidden sm:inline">Pantalla Completa</span>
+            <button id="tab-btn-pdf" onclick="switchTab('pdf')" class="px-4 py-2 rounded-xl text-xs font-bold transition bg-indigo-600 text-white shadow-sm flex items-center gap-2">
+              <span>📚 Visor de PDF</span>
+            </button>
+            <button id="tab-btn-notes" onclick="switchTab('notes')" class="px-4 py-2 rounded-xl text-xs font-bold transition bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-slate-200 flex items-center gap-2">
+              <span>📝 Mis Apuntes Privados</span>
             </button>
           </div>
+          
+          <button onclick="toggleFullscreen()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs px-3 py-1.5 rounded-xl transition flex items-center gap-1">
+            <span>⛶</span>
+            <span class="hidden sm:inline">Pantalla Completa</span>
+          </button>
         </div>
 
-        <!-- Barra de Gestión de Libros -->
-        <div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800 flex flex-wrap items-center justify-between gap-2">
-          <div class="flex items-center gap-2 flex-1 min-w-[240px]">
-            <span class="text-xs text-indigo-400 font-semibold flex items-center gap-1">💾 Mis Libros:</span>
-            <select id="library-select" onchange="switchSavedBook(this.value)" class="flex-1 bg-slate-900 border border-slate-700 rounded-lg text-xs px-2.5 py-1.5 text-slate-200 focus:outline-none focus:border-indigo-500">
-              <option value="">Inicia sesión para ver tu biblioteca...</option>
-            </select>
+        <!-- PESTAÑA 1: VISOR DE LIBROS PDF -->
+        <div id="view-pdf-tab" class="flex-1 flex flex-col space-y-3 min-h-0">
+          <div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800 flex flex-wrap items-center justify-between gap-2">
+            <div class="flex items-center gap-2 flex-1 min-w-[240px]">
+              <span class="text-xs text-indigo-400 font-semibold flex items-center gap-1">💾 Mis Libros:</span>
+              <select id="library-select" onchange="switchSavedBook(this.value)" class="flex-1 bg-slate-900 border border-slate-700 rounded-lg text-xs px-2.5 py-1.5 text-slate-200 focus:outline-none focus:border-indigo-500">
+                <option value="">Inicia sesión para ver tu biblioteca...</option>
+              </select>
+            </div>
+
+            <div class="flex items-center gap-2">
+              <label class="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs px-3 py-1.5 rounded-lg cursor-pointer transition flex items-center gap-1 shadow-sm">
+                <span>➕ Subir PDF</span>
+                <input type="file" id="pdf-input" accept="application/pdf" onchange="handlePDFUpload(event)" class="hidden">
+              </label>
+              <button onclick="deleteSelectedBook()" class="bg-rose-950 hover:bg-rose-900 text-rose-300 border border-rose-800 text-xs px-2.5 py-1.5 rounded-lg transition" title="Eliminar libro seleccionado">🗑️</button>
+            </div>
           </div>
 
-          <div class="flex items-center gap-2">
-            <label class="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs px-3 py-1.5 rounded-lg cursor-pointer transition flex items-center gap-1 shadow-sm">
-              <span>➕ Subir PDF</span>
-              <input type="file" id="pdf-input" accept="application/pdf" onchange="handlePDFUpload(event)" class="hidden">
-            </label>
-            <button onclick="deleteSelectedBook()" class="bg-rose-950 hover:bg-rose-900 text-rose-300 border border-rose-800 text-xs px-2.5 py-1.5 rounded-lg transition">🗑️</button>
-          </div>
-        </div>
-
-        <!-- Visor PDF + Cuaderno -->
-        <div class="grid grid-cols-1 md:grid-cols-12 gap-3 flex-1 min-h-0">
-          <div id="pdf-container" class="md:col-span-7 relative w-full h-full bg-slate-950 rounded-xl border border-slate-800 overflow-hidden flex items-center justify-center">
+          <div id="pdf-container" class="relative w-full flex-1 bg-slate-950 rounded-xl border border-slate-800 overflow-hidden flex items-center justify-center">
             <div id="pdf-placeholder" class="text-center p-6 space-y-2">
               <span class="text-4xl block opacity-80">📚</span>
-              <p class="text-sm font-medium text-slate-200">Selecciona o sube un libro personal</p>
+              <p class="text-sm font-medium text-slate-200" id="book-title">Selecciona o sube un libro personal</p>
+              <p class="text-xs text-slate-400">El PDF se guardará de forma segura en tu navegador</p>
             </div>
             <iframe id="pdf-frame" class="w-full h-full hidden border-none rounded-xl" src=""></iframe>
           </div>
+        </div>
 
-          <div id="notes-container" class="md:col-span-5 flex flex-col h-full bg-slate-950 border border-slate-800 rounded-xl p-3 space-y-2">
-            <div class="flex items-center justify-between border-b border-slate-800 pb-2">
-              <span class="text-xs font-bold text-slate-300">Mis Apuntes Privados</span>
-              <button onclick="saveNotebook()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 text-[11px] px-2 py-0.5 rounded-lg transition">💾 Guardar</button>
+        <!-- PESTAÑA 2: CUADERNO DE APUNTES PRIVADO DEDICADO -->
+        <div id="view-notes-tab" class="flex-1 flex flex-col space-y-3 min-h-0 hidden">
+          <div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="text-sm">✍️</span>
+              <span class="text-xs font-bold text-slate-200">Cuaderno de Apuntes Personal</span>
             </div>
-            <div id="notebook-editor" contenteditable="true" placeholder="Tus notas privadas..." class="flex-1 w-full bg-slate-900 text-slate-100 p-2.5 rounded-lg border border-slate-800 focus:outline-none focus:border-indigo-500 overflow-y-auto text-xs leading-relaxed"></div>
+            <span id="save-status" class="text-[11px] text-emerald-400 font-medium">✓ Guardado automáticamente</span>
+          </div>
+
+          <!-- Editor Completo de Apuntes -->
+          <div id="notebook-editor" 
+               contenteditable="true" 
+               oninput="saveNotebook()"
+               placeholder="Escribe aquí tus apuntes, resúmenes, fórmulas o notas de estudio libres..." 
+               class="w-full flex-1 bg-slate-950 text-slate-100 p-4 rounded-xl border border-slate-800 focus:outline-none focus:border-indigo-500 overflow-y-auto text-sm leading-relaxed font-sans">
           </div>
         </div>
 
@@ -283,7 +292,93 @@
     let db = null;
     let activeObjectUrl = null;
 
-    // Monitor de Autenticación con Firebase
+    // --- LÓGICA DEL TEMPORIZADOR ---
+    let timerInterval = null;
+    let timerSeconds = 6 * 3600; // 6 horas por defecto
+    let isTimerRunning = false;
+
+    function updateTimerDisplay() {
+      const hrs = Math.floor(timerSeconds / 3600);
+      const mins = Math.floor((timerSeconds % 3600) / 60);
+      const secs = timerSeconds % 60;
+      document.getElementById('timer-display').innerText = 
+        `${String(hrs).padStart(2, '0')}:${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+    }
+
+    function applyNewConfig() {
+      const inputVal = parseFloat(document.getElementById('input-hours').value) || 6;
+      timerSeconds = Math.floor(inputVal * 3600);
+      if (isTimerRunning) {
+        clearInterval(timerInterval);
+        isTimerRunning = false;
+        document.getElementById('btn-start').innerText = 'Iniciar';
+        document.getElementById('btn-start').className = 'bg-indigo-600 hover:bg-indigo-500 text-white font-semibold px-5 py-2 rounded-xl text-sm transition';
+      }
+      updateTimerDisplay();
+    }
+
+    function toggleTimer() {
+      const btn = document.getElementById('btn-start');
+      if (isTimerRunning) {
+        clearInterval(timerInterval);
+        isTimerRunning = false;
+        btn.innerText = 'Continuar';
+        btn.className = 'bg-indigo-600 hover:bg-indigo-500 text-white font-semibold px-5 py-2 rounded-xl text-sm transition';
+      } else {
+        if (timerSeconds <= 0) return;
+        isTimerRunning = true;
+        btn.innerText = 'Pausar';
+        btn.className = 'bg-amber-600 hover:bg-amber-500 text-white font-semibold px-5 py-2 rounded-xl text-sm transition';
+        
+        timerInterval = setInterval(() => {
+          if (timerSeconds > 0) {
+            timerSeconds--;
+            updateTimerDisplay();
+            // Alerta cada 30 min (1800 segundos)
+            if (timerSeconds > 0 && timerSeconds % 1800 === 0) {
+              alert("⏰ ¡Llevas 30 minutos de estudio! Tómate un breve descanso.");
+            }
+          } else {
+            clearInterval(timerInterval);
+            isTimerRunning = false;
+            btn.innerText = 'Iniciar';
+            btn.className = 'bg-indigo-600 hover:bg-indigo-500 text-white font-semibold px-5 py-2 rounded-xl text-sm transition';
+            alert("🎉 ¡Bloque de estudio completado!");
+          }
+        }, 1000);
+      }
+    }
+
+    function resetTimer() {
+      if (timerInterval) clearInterval(timerInterval);
+      isTimerRunning = false;
+      const btn = document.getElementById('btn-start');
+      btn.innerText = 'Iniciar';
+      btn.className = 'bg-indigo-600 hover:bg-indigo-500 text-white font-semibold px-5 py-2 rounded-xl text-sm transition';
+      applyNewConfig();
+    }
+
+    // --- CAMBIO DE PESTAÑAS (PDF vs APUNTES) ---
+    function switchTab(tabName) {
+      const pdfTab = document.getElementById('view-pdf-tab');
+      const notesTab = document.getElementById('view-notes-tab');
+      const btnPdf = document.getElementById('tab-btn-pdf');
+      const btnNotes = document.getElementById('tab-btn-notes');
+
+      if (tabName === 'pdf') {
+        pdfTab.classList.remove('hidden');
+        notesTab.classList.add('hidden');
+        btnPdf.className = "px-4 py-2 rounded-xl text-xs font-bold transition bg-indigo-600 text-white shadow-sm flex items-center gap-2";
+        btnNotes.className = "px-4 py-2 rounded-xl text-xs font-bold transition bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-slate-200 flex items-center gap-2";
+      } else {
+        pdfTab.classList.add('hidden');
+        notesTab.classList.remove('hidden');
+        btnNotes.className = "px-4 py-2 rounded-xl text-xs font-bold transition bg-indigo-600 text-white shadow-sm flex items-center gap-2";
+        btnPdf.className = "px-4 py-2 rounded-xl text-xs font-bold transition bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-slate-200 flex items-center gap-2";
+      }
+    }
+
+    // --- FIREBASE AUTENTICACIÓN ---
     window.addEventListener('DOMContentLoaded', () => {
       const checkAuthInterval = setInterval(() => {
         if (window.firebaseAuth) {
@@ -311,7 +406,6 @@
       });
     }
 
-    // Modal Switch: Iniciar Sesión vs Registro
     function toggleAuthMode() {
       isRegisterMode = !isRegisterMode;
       document.getElementById('auth-title').innerText = isRegisterMode ? "Crear Cuenta Privada" : "Iniciar Sesión";
@@ -319,7 +413,6 @@
       document.getElementById('auth-btn-toggle').innerText = isRegisterMode ? "¿Ya tienes cuenta? Inicia sesión" : "¿No tienes cuenta? Regístrate gratis";
     }
 
-    // Procesar Login / Registro
     async function handleAuthSubmit(e) {
       e.preventDefault();
       const email = document.getElementById('auth-email').value;
@@ -348,7 +441,7 @@
       });
     }
 
-    // --- INDEXEDDB AISLADO POR UID DE USUARIO ---
+    // --- BASE DE DATOS LOCAL Y APUNTES ---
     function initIndexedDB() {
       return new Promise((resolve, reject) => {
         const request = indexedDB.open(DB_NAME, 1);
@@ -366,7 +459,6 @@
       });
     }
 
-    // Cargar datos aislados por usuario (`uid`)
     function loadUserData() {
       if (!currentUser) return;
       const uid = currentUser.uid;
@@ -391,9 +483,14 @@
       if (!currentUser) return;
       const editor = document.getElementById('notebook-editor');
       localStorage.setItem(`ac_notebook_${currentUser.uid}`, editor.innerHTML);
+      const status = document.getElementById('save-status');
+      status.innerText = "Guardando...";
+      setTimeout(() => {
+        status.innerText = "✓ Guardado automáticamente";
+      }, 500);
     }
 
-    // --- LIBROS AISLADOS POR USUARIO ---
+    // --- GESTIÓN DE LIBROS ---
     function saveBookToStorage(file) {
       return new Promise((resolve, reject) => {
         const transaction = db.transaction(['user_books'], 'readwrite');
@@ -469,7 +566,6 @@
           document.getElementById('pdf-placeholder').classList.add('hidden');
           frame.src = activeObjectUrl;
           frame.classList.remove('hidden');
-          document.getElementById('book-title').innerText = book.name;
         }
       };
     }
@@ -487,15 +583,13 @@
           document.getElementById('pdf-frame').src = '';
           document.getElementById('pdf-frame').classList.add('hidden');
           document.getElementById('pdf-placeholder').classList.remove('hidden');
-          document.getElementById('book-title').innerText = 'Mi Biblioteca Personal';
           refreshLibraryList();
         };
       }
     }
 
-    // --- PANTALLA COMPLETA ---
     function toggleFullscreen() {
-      const elem = document.getElementById('books-section');
+      const elem = document.getElementById('main-tab-container');
       if (!document.fullscreenElement) {
         elem.requestFullscreen();
       } else {
@@ -503,7 +597,7 @@
       }
     }
 
-    // --- TEMPORIZADOR, RACHAS Y CARDS (PROCESO PRIVADO) ---
+    // --- RACHAS Y FLASHCARDS ---
     let streakData = [];
     let cards = [];
     let currentIndex = 0;
