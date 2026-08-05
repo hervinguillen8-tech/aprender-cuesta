@@ -1,4 +1,4 @@
-html_content = '''<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
@@ -684,8 +684,8 @@ html_content = '''<!DOCTYPE html>
         note.content = editor.innerHTML;
         const textContent = editor.innerText.trim();
         if (textContent) {
-          const firstLine = textContent.split('\\n')[0].substring(0, 25);
-          note.title = firstLine.length < textContent.split('\\n')[0].length ? firstLine + '...' : firstLine;
+          const firstLine = textContent.split('\n')[0].substring(0, 25);
+          note.title = firstLine.length < textContent.split('\n')[0].length ? firstLine + '...' : firstLine;
         } else {
           note.title = `Nota ${userNotes.indexOf(note) + 1}`;
         }
@@ -1117,9 +1117,4 @@ html_content = '''<!DOCTYPE html>
     }
   </script>
 </body>
-</html>'''
-
-with open("aprender_cuesta.html", "w", encoding="utf-8") as f:
-    f.write(html_content)
-
-print("Archivo HTML completado y guardado con éxito como aprender_cuesta.html")
+</html>
