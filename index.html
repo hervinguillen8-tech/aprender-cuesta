@@ -1,989 +1,287 @@
-    <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Aprender Cuesta - Espacio Privado</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    .card-box { transition: opacity 0.2s ease-in-out; }
-    .hide-card { opacity: 0; pointer-events: none; }
-    [contenteditable]:empty:before {
-      content: attr(placeholder);
-      color: #64748b;
-      pointer-events: none;
-      display: block;
-    }
-    #main-tab-container:-webkit-full-screen {
-      width: 100vw; height: 100vh; border-radius: 0; padding: 1rem; background-color: #020617;
-    }
-    #main-tab-container:fullscreen {
-      width: 100vw; height: 100vh; border-radius: 0; padding: 1rem; background-color: #020617;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <title>Guía de Integración: Estación de Estudio e Inteligencia Artificial</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 15mm 12mm;
+            background-color: #f8fafc;
+        }
 
-  <!-- Firebase SDK -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { 
-      getAuth, 
-      createUserWithEmailAndPassword, 
-      signInWithEmailAndPassword, 
-      signOut, 
-      onAuthStateChanged 
-    } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyDDmvbLtznJVmc_suQbNitYQ_FTAuH6uiQ",
-      authDomain: "aprener-cuesta.firebaseapp.com",
-      projectId: "aprener-cuesta",
-      storageBucket: "aprener-cuesta.firebasestorage.app",
-      messagingSenderId: "71261869384",
-      appId: "1:71261869384:web:ef3ff24db8ec0c44aecf7d",
-      measurementId: "G-V84GC7RQNY"
-    };
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            color: #1e293b;
+            font-size: 10pt;
+            line-height: 1.5;
+            background-color: #f8fafc;
+        }
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
+        /* Header Banner */
+        .header-banner {
+            margin: -15mm -12mm 20px -12mm;
+            padding: 25px 15mm;
+            background: #1e3a8a;
+            color: #ffffff;
+            border-bottom: 4px solid #3b82f6;
+        }
 
-    window.firebaseAuth = {
-      auth,
-      createUserWithEmailAndPassword,
-      signInWithEmailAndPassword,
-      signOut,
-      onAuthStateChanged
-    };
-  </script>
+        .header-banner h1 {
+            margin: 0 0 6px 0;
+            font-size: 20pt;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            color: #ffffff;
+        }
+
+        .header-banner p {
+            margin: 0;
+            font-size: 10.5pt;
+            color: #93c5fd;
+            font-weight: 300;
+        }
+
+        /* Section Headings */
+        h2 {
+            color: #1e3a8a;
+            font-size: 13pt;
+            font-weight: 700;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            padding-left: 10px;
+            border-left: 4px solid #2563eb;
+            page-break-after: avoid;
+        }
+
+        h3 {
+            color: #0f172a;
+            font-size: 11pt;
+            font-weight: 600;
+            margin-top: 14px;
+            margin-bottom: 6px;
+            page-break-after: avoid;
+        }
+
+        p {
+            margin-top: 0;
+            margin-bottom: 8px;
+            text-align: justify;
+        }
+
+        ul, ol {
+            margin-top: 0;
+            margin-bottom: 10px;
+            padding-left: 20px;
+        }
+
+        li {
+            margin-bottom: 4px;
+        }
+
+        /* Highlight Cards & Prompt Boxes */
+        .card {
+            background-color: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 12px 15px;
+            margin-bottom: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .prompt-box {
+            background-color: #0f172a;
+            color: #f8fafc;
+            border-left: 4px solid #38bdf8;
+            border-radius: 4px;
+            padding: 10px 12px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 9pt;
+            line-height: 1.4;
+            margin: 8px 0 12px 0;
+            white-space: pre-wrap;
+        }
+
+        .badge {
+            display: inline-block;
+            background-color: #eff6ff;
+            color: #1d4ed8;
+            font-weight: 600;
+            font-size: 8.5pt;
+            padding: 2px 8px;
+            border-radius: 12px;
+            border: 1px solid #bfdbfe;
+            margin-bottom: 6px;
+        }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0 14px 0;
+            background-color: #ffffff;
+            font-size: 9.5pt;
+        }
+
+        th {
+            background-color: #1e293b;
+            color: #ffffff;
+            font-weight: 600;
+            text-align: left;
+            padding: 8px 10px;
+            border: 1px solid #1e293b;
+        }
+
+        td {
+            padding: 8px 10px;
+            border: 1px solid #cbd5e1;
+            vertical-align: top;
+        }
+
+        tr:nth-child(even) td {
+            background-color: #f1f5f9;
+        }
+
+        .footer-note {
+            margin-top: 25px;
+            padding-top: 10px;
+            border-top: 1px solid #cbd5e1;
+            font-size: 8.5pt;
+            color: #64748b;
+            text-align: center;
+        }
+    </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen font-sans flex flex-col selection:bg-indigo-600">
+<body>
 
-  <!-- MODAL DE AUTENTICACIÓN -->
-  <div id="auth-modal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-[100] flex items-center justify-center p-4">
-    <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-5">
-      <div class="text-center space-y-1">
-        <div class="w-12 h-12 bg-indigo-600 rounded-xl flex items-center justify-center font-black text-xl mx-auto text-white">AC</div>
-        <h2 id="auth-title" class="text-xl font-bold text-slate-100">Iniciar Sesión</h2>
-        <p class="text-xs text-slate-400">Accede a tu biblioteca y notas privadas</p>
-      </div>
-
-      <form onsubmit="handleAuthSubmit(event)" class="space-y-3">
-        <div>
-          <label class="block text-xs font-semibold text-slate-300 mb-1">Correo Electrónico</label>
-          <input type="email" id="auth-email" required placeholder="tu@correo.com" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-100 focus:outline-none focus:border-indigo-500">
-        </div>
-        <div>
-          <label class="block text-xs font-semibold text-slate-300 mb-1">Contraseña</label>
-          <input type="password" id="auth-password" required placeholder="••••••••" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-100 focus:outline-none focus:border-indigo-500">
-        </div>
-
-        <p id="auth-error" class="text-xs text-rose-400 text-center hidden"></p>
-
-        <button type="submit" id="auth-btn-submit" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-2 rounded-xl transition text-xs">
-          Entrar a mi Espacio
-        </button>
-      </form>
-
-      <div class="text-center pt-2 border-t border-slate-800">
-        <button onclick="toggleAuthMode()" id="auth-btn-toggle" class="text-xs text-indigo-400 hover:underline">
-          ¿No tienes cuenta? Regístrate gratis
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Encabezado Principal -->
-  <header class="border-b border-slate-800 bg-slate-900 sticky top-0 z-50">
-    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
-      <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center font-black text-lg text-white">
-          AC
-        </div>
-        <div>
-          <h1 class="text-xl font-bold tracking-tight text-white leading-none">Aprender Cuesta</h1>
-          <p class="text-xs text-slate-400 mt-1">Plataforma de estudio personal</p>
-        </div>
-      </div>
-
-      <div class="flex items-center gap-3">
-        <div class="flex items-center gap-2 bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-700">
-          <span class="text-lg">🩺</span>
-          <span class="font-bold text-slate-200 text-xs" id="streak-count">0 días</span>
-        </div>
-        
-        <div class="flex items-center gap-2 bg-slate-950 px-3 py-1.5 rounded-lg border border-slate-800">
-          <span class="text-xs text-slate-300 font-medium truncate max-w-[120px]" id="user-display">Cargando...</span>
-          <button onclick="logoutUser()" class="text-xs bg-rose-950 text-rose-300 border border-rose-800 hover:bg-rose-900 px-2 py-0.5 rounded-md transition">
-            Salir
-          </button>
-        </div>
-      </div>
-    </div>
-  </header>
-
-  <!-- Contenido Principal -->
-  <main class="max-w-7xl mx-auto px-4 py-6 flex-1 w-full grid grid-cols-1 lg:grid-cols-12 gap-6">
-    
-    <!-- Columna Izquierda: Temporizador, Reproductor de Música, Tareas, Rachas, Flashcards -->
-    <div class="lg:col-span-4 space-y-6">
-      
-      <!-- Temporizador Funcional -->
-      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-sm">
-        <div class="flex items-center justify-between mb-3">
-          <div class="flex items-center gap-2">
-            <span class="text-base">⏱️</span>
-            <h2 class="text-base font-bold text-slate-200">Bloque de Estudio</h2>
-          </div>
-          <div class="flex items-center gap-1">
-            <input type="number" id="input-hours" min="0.1" max="24" step="0.5" value="6" 
-                   class="w-14 bg-slate-950 border border-slate-700 rounded-lg text-center text-xs py-1 text-slate-200 focus:outline-none focus:border-indigo-500">
-            <span class="text-xs text-slate-400 font-semibold">hrs</span>
-            <button onclick="applyNewConfig()" class="bg-indigo-950 text-indigo-300 border border-indigo-800 hover:bg-indigo-900 text-xs px-2 py-1 rounded-lg transition ml-1">
-              Fijar
-            </button>
-          </div>
-        </div>
-        
-        <div class="text-center py-1">
-          <div class="text-4xl font-mono font-bold text-indigo-400 tracking-wider mb-2" id="timer-display">
-            06:00:00
-          </div>
-          <p class="text-xs text-slate-400 mb-3">Aviso de descanso automático cada 30 min</p>
-          
-          <div class="flex justify-center gap-2">
-            <button id="btn-start" onclick="toggleTimer()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold px-5 py-2 rounded-xl text-sm transition">
-              Iniciar
-            </button>
-            <button onclick="resetTimer()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold px-4 py-2 rounded-xl text-sm transition border border-slate-700">
-              Reiniciar
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <!-- NUEVO REPRODUCTOR MULTIMEDIA PERSONAL (MP3/MP4, Spotify, YouTube) -->
-      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-sm space-y-3">
-        <div class="flex items-center justify-between">
-          <div class="flex items-center gap-2">
-            <span class="text-base">🎵</span>
-            <h2 class="text-base font-bold text-slate-200">Música de Estudio</h2>
-          </div>
-          <span class="text-[10px] text-indigo-400 font-semibold">MP3/MP4, Spotify, YT</span>
-        </div>
-
-        <!-- Cargar Archivo Local MP3 / MP4 -->
-        <div class="space-y-2">
-          <label class="block w-full text-center bg-slate-950 hover:bg-slate-800 border border-slate-800 hover:border-indigo-500 text-xs text-slate-300 py-2 rounded-xl cursor-pointer transition font-medium">
-            <span>📁 Cargar MP3 / MP4 desde tu equipo</span>
-            <input type="file" id="media-file-input" accept="audio/*,video/*" onchange="handleLocalMediaUpload(event)" class="hidden">
-          </label>
-          <div id="local-player-container" class="hidden">
-            <p id="local-media-title" class="text-[11px] text-indigo-300 truncate font-semibold mb-1"></p>
-            <audio id="local-audio" controls class="w-full h-8 rounded-lg bg-slate-950 border border-slate-800"></audio>
-            <video id="local-video" controls class="w-full max-h-40 rounded-lg bg-slate-950 border border-slate-800 mt-1 hidden"></video>
-          </div>
-        </div>
-
-        <!-- Enlace de Spotify / YouTube Music -->
-        <div class="pt-2 border-t border-slate-800 space-y-2">
-          <form onsubmit="loadEmbeddedMusic(event)" class="flex gap-1.5">
-            <input type="text" id="music-url-input" placeholder="Enlace de Spotify o YouTube..." class="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-2.5 py-1.5 text-xs text-slate-100 focus:outline-none focus:border-indigo-500">
-            <button type="submit" class="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs px-2.5 py-1.5 rounded-xl transition">Cargar</button>
-          </form>
-
-          <!-- Reproductor Embebido Iframe -->
-          <div id="embed-player-container" class="hidden rounded-xl overflow-hidden border border-slate-800 bg-slate-950">
-            <iframe id="embed-iframe" class="w-full h-36 border-none" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
-          </div>
-        </div>
-      </div>
-
-      <!-- Metas del Día (To-Do List) -->
-      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-sm space-y-3">
-        <div class="flex items-center justify-between">
-          <div class="flex items-center gap-2">
-            <span class="text-base">📋</span>
-            <h2 class="text-base font-bold text-slate-200">Metas Diarias</h2>
-          </div>
-          <span class="text-xs text-indigo-400 font-bold" id="todo-progress-text">0%</span>
-        </div>
-
-        <!-- Barra de Progreso -->
-        <div class="w-full bg-slate-950 h-2 rounded-full overflow-hidden border border-slate-800">
-          <div id="todo-progress-bar" class="bg-indigo-600 h-full transition-all duration-300" style="width: 0%;"></div>
-        </div>
-
-        <!-- Lista de tareas -->
-        <div id="todo-list" class="space-y-1.5 max-h-40 overflow-y-auto pr-1"></div>
-
-        <form onsubmit="addTodoTask(event)" class="flex gap-2 pt-1">
-          <input type="text" id="todo-input" placeholder="Nueva meta..." required class="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-3 py-1.5 text-xs text-slate-100 focus:outline-none focus:border-indigo-500">
-          <button type="submit" class="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs px-3 py-1.5 rounded-xl transition">+</button>
-        </form>
-      </div>
-
-      <!-- Rachas -->
-      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-sm">
-        <div class="flex items-center justify-between mb-3">
-          <div class="flex items-center gap-2">
-            <span class="text-base">🩺</span>
-            <h2 class="text-base font-bold text-slate-200">Racha Semanal</h2>
-          </div>
-          <button onclick="markTodayStreak()" class="bg-emerald-950 hover:bg-emerald-900 text-emerald-300 border border-emerald-800 text-xs font-semibold px-2.5 py-1 rounded-lg transition">
-            Marcar Hoy
-          </button>
-        </div>
-        <div class="grid grid-cols-7 gap-1.5 text-center mt-2" id="streak-grid"></div>
-      </div>
-
-      <!-- Flashcards con Autoevaluación -->
-      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-sm space-y-4">
-        <div class="flex items-center justify-between">
-          <div class="flex items-center gap-2">
-            <span class="text-base">🧠</span>
-            <h2 class="text-base font-bold text-slate-200">Flashcards Privadas</h2>
-          </div>
-          <span class="text-xs font-mono bg-slate-800 px-2.5 py-1 rounded-md text-slate-400 border border-slate-700" id="card-counter">0 / 0</span>
-        </div>
-
-        <div class="h-36 w-full cursor-pointer relative" onclick="flipCard()">
-          <div id="card-front" class="card-box absolute inset-0 p-4 flex flex-col items-center justify-center bg-slate-800 border border-slate-700 rounded-xl text-center">
-            <span class="text-xs uppercase tracking-wider text-indigo-400 font-bold mb-1">Pregunta (Clic para voltear)</span>
-            <p class="text-xs font-medium text-slate-100" id="card-question">Agrega una tarjeta para comenzar</p>
-          </div>
-          <div id="card-back" class="card-box hide-card absolute inset-0 p-4 flex flex-col items-center justify-center bg-slate-800 border border-indigo-600 rounded-xl text-center">
-            <span class="text-xs uppercase tracking-wider text-emerald-400 font-bold mb-1">Respuesta</span>
-            <p class="text-xs font-medium text-slate-100 mb-2" id="card-answer">---</p>
-            
-            <div class="flex gap-2" onclick="event.stopPropagation()">
-              <button onclick="reviewCard(false)" class="bg-amber-950 text-amber-300 border border-amber-800 text-[10px] px-2 py-0.5 rounded transition">🔄 Repasar</button>
-              <button onclick="reviewCard(true)" class="bg-emerald-950 text-emerald-300 border border-emerald-800 text-[10px] px-2 py-0.5 rounded transition">✅ Me la sé</button>
-            </div>
-          </div>
-        </div>
-
-        <div class="flex items-center justify-between">
-          <button onclick="prevCard()" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 px-2.5 py-1 rounded-lg text-xs font-medium transition">← Ant</button>
-          <button onclick="deleteCurrentCard()" class="bg-rose-950 text-rose-300 border border-rose-800 hover:bg-rose-900 px-2 py-1 rounded-lg text-xs transition">Borrar</button>
-          <button onclick="nextCard()" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 px-2.5 py-1 rounded-lg text-xs font-medium transition">Sig →</button>
-        </div>
-
-        <form onsubmit="addCard(event)" class="space-y-2 pt-2 border-t border-slate-800">
-          <input type="text" id="input-q" required placeholder="Pregunta" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-slate-100 focus:outline-none focus:border-indigo-500">
-          <input type="text" id="input-a" required placeholder="Respuesta" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-slate-100 focus:outline-none focus:border-indigo-500">
-          <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-1.5 rounded-lg transition text-xs">+ Guardar Flashcard</button>
-        </form>
-      </div>
-
+    <div class="header-banner">
+        <h1>Ecosistema de Estudio Inteligente + IA</h1>
+        <p>Plan Maestro y Guía de Herramientas para Estudiantes de Todo Nivel</p>
     </div>
 
-    <!-- Columna Derecha: SISTEMA DE PESTAÑAS Y CUADERNO MULTI-NOTA -->
-    <div class="lg:col-span-8">
-      <div id="main-tab-container" class="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-sm space-y-4 flex flex-col h-[880px] transition-all">
-        
-        <!-- Barra Superior de Pestañas -->
-        <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-          <div class="flex items-center gap-2">
-            <button id="tab-btn-pdf" onclick="switchTab('pdf')" class="px-4 py-2 rounded-xl text-xs font-bold transition bg-indigo-600 text-white shadow-sm flex items-center gap-2">
-              <span>📚 Visor de PDF</span>
-            </button>
-            <button id="tab-btn-notes" onclick="switchTab('notes')" class="px-4 py-2 rounded-xl text-xs font-bold transition bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-slate-200 flex items-center gap-2">
-              <span>📝 Mis Apuntes Avanzados</span>
-            </button>
-          </div>
-          
-          <button onclick="toggleFullscreen()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs px-3 py-1.5 rounded-xl transition flex items-center gap-1">
-            <span>⛶</span>
-            <span class="hidden sm:inline">Pantalla Completa</span>
-          </button>
-        </div>
+    <h2>1. Visión General del Sistema</h2>
+    <p>
+        Esta propuesta integra herramientas de software libre, plantillas académicas y flujos de trabajo optimizados con 
+        <b>Inteligencia Artificial</b> para transformar cualquier espacio de trabajo o cybercafé en un centro de alto rendimiento académico. 
+        El objetivo principal es reducir los tiempos de estudio repetitivo (como la creación manual de fichas de repaso) y elevar la calidad de la comprensión conceptual.
+    </p>
 
-        <!-- PESTAÑA 1: VISOR DE LIBROS PDF -->
-        <div id="view-pdf-tab" class="flex-1 flex flex-col space-y-3 min-h-0">
-          <div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800 flex flex-wrap items-center justify-between gap-2">
-            <div class="flex items-center gap-2 flex-1 min-w-[240px]">
-              <span class="text-xs text-indigo-400 font-semibold flex items-center gap-1">💾 Mis Libros:</span>
-              <select id="library-select" onchange="switchSavedBook(this.value)" class="flex-1 bg-slate-900 border border-slate-700 rounded-lg text-xs px-2.5 py-1.5 text-slate-200 focus:outline-none focus:border-indigo-500">
-                <option value="">Inicia sesión para ver tu biblioteca...</option>
-              </select>
-            </div>
+    <h2>2. Módulo de IA: Generación Ultrarrápida de Flashcards</h2>
+    <p>
+        Las <i>flashcards</i> (tarjetas de memoria) basadas en la <b>Repetición Espaciada (Spaced Repetition)</b> son la técnica más efectiva comprobada por la ciencia para memorización a largo plazo (Anki, Quizlet). La IA permite automatizar su creación en segundos a partir de cualquier apuntes o PDF.
+    </p>
 
-            <div class="flex items-center gap-2">
-              <label class="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs px-3 py-1.5 rounded-lg cursor-pointer transition flex items-center gap-1 shadow-sm">
-                <span>➕ Subir PDF</span>
-                <input type="file" id="pdf-input" accept="application/pdf" onchange="handlePDFUpload(event)" class="hidden">
-              </label>
-              <button onclick="deleteSelectedBook()" class="bg-rose-950 hover:bg-rose-900 text-rose-300 border border-rose-800 text-xs px-2.5 py-1.5 rounded-lg transition" title="Eliminar libro seleccionado">🗑️</button>
-            </div>
-          </div>
+    <div class="card">
+        <span class="badge">PROMPT MAESTRO 1</span>
+        <h3>Conversión de Apuntes/PDF a Flashcards Formato CSV (Anki / Quizlet)</h3>
+        <p>Copia y pega este prompt junto con tu texto de estudio en la Inteligencia Artificial:</p>
+        <div class="prompt-box">Actúa como un tutor experto en pedagogía. Analiza el siguiente texto y extrae los conceptos clave, definiciones, fórmulas y preguntas de examen más probables. 
 
-          <div id="pdf-container" class="relative w-full flex-1 bg-slate-950 rounded-xl border border-slate-800 overflow-hidden flex items-center justify-center">
-            <div id="pdf-placeholder" class="text-center p-6 space-y-2">
-              <span class="text-4xl block opacity-80">📚</span>
-              <p class="text-sm font-medium text-slate-200" id="book-title">Selecciona o sube un libro personal</p>
-              <p class="text-xs text-slate-400">El PDF se guardará de forma segura en tu navegador</p>
-            </div>
-            <iframe id="pdf-frame" class="w-full h-full hidden border-none rounded-xl" src=""></iframe>
-          </div>
-        </div>
+Genera una lista de flashcards en formato CSV puro (separado por comas) con exactamente 3 columnas:
+"Pregunta","Respuesta","Etiqueta"
 
-        <!-- PESTAÑA 2: CUADERNO MULTI-NOTA CON FORMATO Y DESCARGA -->
-        <div id="view-notes-tab" class="flex-1 flex flex-col space-y-3 min-h-0 hidden">
-          <!-- Gestor de Cuadernos y Notas -->
-          <div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800 flex flex-wrap items-center justify-between gap-2">
-            <div class="flex items-center gap-2 flex-1 min-w-[220px]">
-              <span class="text-xs text-indigo-400 font-semibold">📓 Libreta:</span>
-              <select id="notes-select" onchange="selectNote(this.value)" class="flex-1 bg-slate-900 border border-slate-700 rounded-lg text-xs px-2.5 py-1.5 text-slate-200 focus:outline-none focus:border-indigo-500">
-              </select>
-            </div>
+Reglas:
+1. Las preguntas deben ser directas, claras y enfocadas en un solo concepto.
+2. Las respuestas deben ser concisas (máximo 2 oraciones).
+3. Agrega una etiqueta relevante (ej. #anatomia, #historia, #formula).
+4. No agregues texto introductorio ni explicaciones fuera del CSV.
 
-            <div class="flex items-center gap-2">
-              <button onclick="createNewNote()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs px-3 py-1.5 rounded-lg transition">+ Nueva Nota</button>
-              <button onclick="exportCurrentNote()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs px-2.5 py-1.5 rounded-lg transition">📥 Descargar .txt</button>
-              <button onclick="deleteCurrentNote()" class="bg-rose-950 hover:bg-rose-900 text-rose-300 border border-rose-800 text-xs px-2 py-1.5 rounded-lg transition">🗑️</button>
-            </div>
-          </div>
-
-          <!-- Barra de Herramientas de Formato (Rich Text) -->
-          <div class="bg-slate-950 px-3 py-2 rounded-xl border border-slate-800 flex flex-wrap items-center justify-between gap-2">
-            <div class="flex items-center gap-1">
-              <button onclick="formatText('bold')" class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded text-xs font-bold" title="Negrita">B</button>
-              <button onclick="formatText('italic')" class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded text-xs italic" title="Cursiva">I</button>
-              <button onclick="formatText('underline')" class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded text-xs underline" title="Subrayado">U</button>
-              <button onclick="formatText('hiliteColor', '#fef08a')" class="px-2.5 py-1 bg-yellow-900/60 text-yellow-300 hover:bg-yellow-800/80 rounded text-xs" title="Resaltar">🖊️</button>
-              <button onclick="formatText('insertUnorderedList')" class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded text-xs" title="Lista">• Lista</button>
-            </div>
-            <span id="save-status" class="text-[11px] text-emerald-400 font-medium">✓ Guardado automáticamente</span>
-          </div>
-
-          <!-- Editor Principal de Contenido -->
-          <div id="notebook-editor" 
-               contenteditable="true" 
-               oninput="saveCurrentNoteContent()"
-               placeholder="Escribe aquí tus apuntes, resúmenes o fórmulas..." 
-               class="w-full flex-1 bg-slate-950 text-slate-100 p-4 rounded-xl border border-slate-800 focus:outline-none focus:border-indigo-500 overflow-y-auto text-sm leading-relaxed font-sans">
-          </div>
-        </div>
-
-      </div>
+Texto de estudio:
+[PEGA AQUÍ TU TEXTO O RESUMEN]</div>
     </div>
 
-  </main>
+    <div class="card">
+        <span class="badge">PROMPT MAESTRO 2</span>
+        <h3>Flashcards de Diagnóstico / Caso Práctico (Nivel Universitario / Técnico)</h3>
+        <div class="prompt-box">A partir del tema [INSERTAR TEMA], genera 10 tarjetas de preguntas tipo caso práctico o problema de aplicación.
+Formato:
+- Anverso: Escenario o problema corto.
+- Reverso: Solución paso a paso + concepto clave aplicado.</div>
+    </div>
+
+    <h2>3. Módulo de IA: Creación de Mapas Mentales y Esquemas Visuales</h2>
+    <p>
+        Para los estudiantes de aprendizaje visual, la IA permite estructurar grandes volúmenes de información en jerarquías lógicas y códigos compatibles con editores visuales automáticos (como Mermaid.js, XMind o CmapTools).
+    </p>
+
+    <div class="card">
+        <span class="badge">PROMPT MAESTRO 3</span>
+        <h3>Generador de Estructura de Mapa Mental en Código Mermaid.js</h3>
+        <div class="prompt-box">Actúa como un especialista en aprendizaje visual. Lee el siguiente tema y crea un código de diagrama de flujo / mapa mental usando sintaxis Mermaid (graph TD).
+
+Estructura requerida:
+- Nodo Central: Nombre del Tema Principal.
+- Sub-nodos de Nivel 1: Ramas o Categorías Principales.
+- Sub-nodos de Nivel 2: Conceptos Clave, Fórmulas o Ejemplos.
+
+Proporciona únicamente el bloque de código Mermaid sin rodeos para copiar y pegar directamente en mermaid.live o Notion.
+
+Texto a diagramar:
+[PEGA TU TEXTO AQUÍ]</div>
+    </div>
+
+    <div class="card">
+        <span class="badge">PROMPT MAESTRO 4</span>
+        <h3>Descomposición Jerárquica para XMind / Canva</h3>
+        <div class="prompt-box">Organiza el tema [INSERTAR TEMA] en un esquema multinivel (Listas con sangría de viñetas) optimizado para copiar a herramientas de mapas conceptuales.
+- Tema Principal
+  -- Gran Rama 1
+     --- Detalle A (Definición corta)
+     --- Detalle B (Ejemplo clave)
+  -- Gran Rama 2
+     --- Detalle C</div>
+    </div>
+
+    <h2>4. Catálogo de Herramientas por Especialidad Académica</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Área / Perfil</th>
+                <th>Herramientas Recomendadas</th>
+                <th>Uso Principal en la Estación</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><b>STEM (Ingeniería, Ciencias, Cómputo)</b></td>
+                <td>GeoGebra, VS Code, Octave, PhET Interactive</td>
+                <td>Cálculo, graficación, simulaciones de física/química y programación.</td>
+            </tr>
+            <tr>
+                <td><b>Humanidades y Derecho</b></td>
+                <td>Zotero, Mendeley, Lectores TTS, DLE</td>
+                <td>Gestión de bibliografía, lecturas guiadas por audio y redacción formal.</td>
+            </tr>
+            <tr>
+                <td><b>Diseño, Arte y Fotografía</b></td>
+                <td>Krita, Inkscape, Canva, Unsplash</td>
+                <td>Edición vectorial, dibujo digital, maquetación e ilustración.</td>
+            </tr>
+            <tr>
+                <td><b>General / Todo Estudiante</b></td>
+                <td>Anki, XMind, PDF24 Tools, Pomodoro Timer</td>
+                <td>Memorización espaciada, mapas mentales, gestión de PDF y enfoque.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>5. Productividad y Plantillas Académicas Incluidas</h2>
+    <ul>
+        <li><b>Formato Normalizado de Trabajos:</b> Plantillas con estilos prediseñados en normas APA (7ma Edición), IEEE para ingeniería y Vancouver para área médica.</li>
+        <li><b>Curriculum Vitae Estudiantil:</b> Modelos de CV limpios en PDF/Word diseñados para solicitudes de becas, servicio social o primer empleo.</li>
+        <li><b>Convertidor Universal de Archivos:</b> Accesos rápidos a utilidades locales/web para unir, comprimir, convertir PDF a Word y extraer texto de imágenes (OCR).</li>
+        <li><b>Modo Enfoque Pomodoro:</b> Widget integrado para bloques de trabajo de 25 minutos con 5 minutos de pausa activa para maximizar la retención.</li>
+    </ul>
+
+    <div class="footer-note">
+        Diseñado para impulsar el aprendizaje eficiente y accesible • Estación de Estudio Inteligente
+    </div>
 
-  <script>
-    // --- VARIABLES GLOBALES Y AUTENTICACIÓN ---
-    let currentUser = null;
-    let isRegisterMode = false;
-    const DB_NAME = 'AprenderCuesta_UserDB';
-    let db = null;
-    let activeObjectUrl = null;
-
-    // --- LÓGICA DEL TEMPORIZADOR ---
-    let timerInterval = null;
-    let timerSeconds = 6 * 3600;
-    let isTimerRunning = false;
-
-    function updateTimerDisplay() {
-      const hrs = Math.floor(timerSeconds / 3600);
-      const mins = Math.floor((timerSeconds % 3600) / 60);
-      const secs = timerSeconds % 60;
-      document.getElementById('timer-display').innerText = 
-        `${String(hrs).padStart(2, '0')}:${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
-    }
-
-    function applyNewConfig() {
-      const inputVal = parseFloat(document.getElementById('input-hours').value) || 6;
-      timerSeconds = Math.floor(inputVal * 3600);
-      if (isTimerRunning) {
-        clearInterval(timerInterval);
-        isTimerRunning = false;
-        document.getElementById('btn-start').innerText = 'Iniciar';
-        document.getElementById('btn-start').className = 'bg-indigo-600 hover:bg-indigo-500 text-white font-semibold px-5 py-2 rounded-xl text-sm transition';
-      }
-      updateTimerDisplay();
-    }
-
-    function toggleTimer() {
-      const btn = document.getElementById('btn-start');
-      if (isTimerRunning) {
-        clearInterval(timerInterval);
-        isTimerRunning = false;
-        btn.innerText = 'Continuar';
-        btn.className = 'bg-indigo-600 hover:bg-indigo-500 text-white font-semibold px-5 py-2 rounded-xl text-sm transition';
-      } else {
-        if (timerSeconds <= 0) return;
-        isTimerRunning = true;
-        btn.innerText = 'Pausar';
-        btn.className = 'bg-amber-600 hover:bg-amber-500 text-white font-semibold px-5 py-2 rounded-xl text-sm transition';
-        
-        timerInterval = setInterval(() => {
-          if (timerSeconds > 0) {
-            timerSeconds--;
-            updateTimerDisplay();
-            if (timerSeconds > 0 && timerSeconds % 1800 === 0) {
-              alert("⏰ ¡Llevas 30 minutos de estudio! Tómate un breve descanso.");
-            }
-          } else {
-            clearInterval(timerInterval);
-            isTimerRunning = false;
-            btn.innerText = 'Iniciar';
-            btn.className = 'bg-indigo-600 hover:bg-indigo-500 text-white font-semibold px-5 py-2 rounded-xl text-sm transition';
-            alert("🎉 ¡Bloque de estudio completado!");
-          }
-        }, 1000);
-      }
-    }
-
-    function resetTimer() {
-      if (timerInterval) clearInterval(timerInterval);
-      isTimerRunning = false;
-      const btn = document.getElementById('btn-start');
-      btn.innerText = 'Iniciar';
-      btn.className = 'bg-indigo-600 hover:bg-indigo-500 text-white font-semibold px-5 py-2 rounded-xl text-sm transition';
-      applyNewConfig();
-    }
-
-    // --- REPRODUCTOR MULTIMEDIA PERSONAL (MP3/MP4 & SPOTIFY/YOUTUBE) ---
-    let localMediaUrl = null;
-
-    function handleLocalMediaUpload(e) {
-      const file = e.target.files[0];
-      if (!file) return;
-
-      if (localMediaUrl) URL.revokeObjectURL(localMediaUrl);
-      localMediaUrl = URL.createObjectURL(file);
-
-      const container = document.getElementById('local-player-container');
-      const title = document.getElementById('local-media-title');
-      const audioEl = document.getElementById('local-audio');
-      const videoEl = document.getElementById('local-video');
-
-      container.classList.remove('hidden');
-      title.innerText = `▶ ${file.name}`;
-
-      if (file.type.startsWith('video/')) {
-        audioEl.classList.add('hidden');
-        audioEl.pause();
-        videoEl.src = localMediaUrl;
-        videoEl.classList.remove('hidden');
-      } else {
-        videoEl.classList.add('hidden');
-        videoEl.pause();
-        audioEl.src = localMediaUrl;
-        audioEl.classList.remove('hidden');
-      }
-    }
-
-    function loadEmbeddedMusic(e) {
-      e.preventDefault();
-      const url = document.getElementById('music-url-input').value.trim();
-      const container = document.getElementById('embed-player-container');
-      const iframe = document.getElementById('embed-iframe');
-
-      if (!url) return;
-
-      let embedUrl = "";
-
-      // Spotify
-      if (url.includes("spotify.com")) {
-        embedUrl = url.replace("open.spotify.com/", "open.spotify.com/embed/");
-      } 
-      // YouTube / YouTube Music
-      else if (url.includes("youtube.com") || url.includes("youtu.be")) {
-        let videoId = "";
-        if (url.includes("v=")) {
-          videoId = url.split("v=")[1].split("&")[0];
-        } else if (url.includes("youtu.be/")) {
-          videoId = url.split("youtu.be/")[1].split("?")[0];
-        }
-        if (videoId) {
-          embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
-        }
-      }
-
-      if (embedUrl) {
-        iframe.src = embedUrl;
-        container.classList.remove('hidden');
-      } else {
-        alert("Por favor ingresa un enlace válido de Spotify o YouTube.");
-      }
-    }
-
-    // --- CAMBIO DE PESTAÑAS ---
-    function switchTab(tabName) {
-      const pdfTab = document.getElementById('view-pdf-tab');
-      const notesTab = document.getElementById('view-notes-tab');
-      const btnPdf = document.getElementById('tab-btn-pdf');
-      const btnNotes = document.getElementById('tab-btn-notes');
-
-      if (tabName === 'pdf') {
-        pdfTab.classList.remove('hidden');
-        notesTab.classList.add('hidden');
-        btnPdf.className = "px-4 py-2 rounded-xl text-xs font-bold transition bg-indigo-600 text-white shadow-sm flex items-center gap-2";
-        btnNotes.className = "px-4 py-2 rounded-xl text-xs font-bold transition bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-slate-200 flex items-center gap-2";
-      } else {
-        pdfTab.classList.add('hidden');
-        notesTab.classList.remove('hidden');
-        btnNotes.className = "px-4 py-2 rounded-xl text-xs font-bold transition bg-indigo-600 text-white shadow-sm flex items-center gap-2";
-        btnPdf.className = "px-4 py-2 rounded-xl text-xs font-bold transition bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-slate-200 flex items-center gap-2";
-      }
-    }
-
-    // --- FIREBASE LISTENERS ---
-    window.addEventListener('DOMContentLoaded', () => {
-      const checkAuthInterval = setInterval(() => {
-        if (window.firebaseAuth) {
-          clearInterval(checkAuthInterval);
-          initAuthListener();
-        }
-      }, 100);
-    });
-
-    function initAuthListener() {
-      const { auth, onAuthStateChanged } = window.firebaseAuth;
-      onAuthStateChanged(auth, (user) => {
-        if (user) {
-          currentUser = user;
-          document.getElementById('auth-modal').classList.add('hidden');
-          document.getElementById('user-display').innerText = user.email;
-          initIndexedDB().then(() => {
-            loadUserData();
-          });
-        } else {
-          currentUser = null;
-          document.getElementById('auth-modal').classList.remove('hidden');
-          document.getElementById('user-display').innerText = 'Sin sesión';
-        }
-      });
-    }
-
-    function toggleAuthMode() {
-      isRegisterMode = !isRegisterMode;
-      document.getElementById('auth-title').innerText = isRegisterMode ? "Crear Cuenta Privada" : "Iniciar Sesión";
-      document.getElementById('auth-btn-submit').innerText = isRegisterMode ? "Registrarme" : "Entrar a mi Espacio";
-      document.getElementById('auth-btn-toggle').innerText = isRegisterMode ? "¿Ya tienes cuenta? Inicia sesión" : "¿No tienes cuenta? Regístrate gratis";
-    }
-
-    async function handleAuthSubmit(e) {
-      e.preventDefault();
-      const email = document.getElementById('auth-email').value;
-      const pass = document.getElementById('auth-password').value;
-      const errEl = document.getElementById('auth-error');
-      errEl.classList.add('hidden');
-
-      const { auth, signInWithEmailAndPassword, createUserWithEmailAndPassword } = window.firebaseAuth;
-
-      try {
-        if (isRegisterMode) {
-          await createUserWithEmailAndPassword(auth, email, pass);
-        } else {
-          await signInWithEmailAndPassword(auth, email, pass);
-        }
-      } catch (err) {
-        errEl.innerText = "Error: " + err.message;
-        errEl.classList.remove('hidden');
-      }
-    }
-
-    function logoutUser() {
-      const { auth, signOut } = window.firebaseAuth;
-      signOut(auth).then(() => {
-        location.reload();
-      });
-    }
-
-    // --- BASE DE DATOS LOCAL Y CARGA DE DATOS ---
-    function initIndexedDB() {
-      return new Promise((resolve, reject) => {
-        const request = indexedDB.open(DB_NAME, 1);
-        request.onupgradeneeded = (e) => {
-          const database = e.target.result;
-          if (!database.objectStoreNames.contains('user_books')) {
-            database.createObjectStore('user_books', { keyPath: 'id', autoIncrement: true });
-          }
-        };
-        request.onsuccess = (e) => {
-          db = e.target.result;
-          resolve(db);
-        };
-        request.onerror = (e) => reject(e.target.error);
-      });
-    }
-
-    function loadUserData() {
-      if (!currentUser) return;
-      const uid = currentUser.uid;
-
-      // Cargar Notas
-      loadNotesList();
-
-      // Cargar Flashcards
-      cards = JSON.parse(localStorage.getItem(`ac_cards_${uid}`)) || [];
-      renderCard();
-
-      // Cargar Rachas
-      streakData = JSON.parse(localStorage.getItem(`ac_streaks_${uid}`)) || [];
-      renderStreaks();
-
-      // Cargar Tareas
-      todoTasks = JSON.parse(localStorage.getItem(`ac_todos_${uid}`)) || [];
-      renderTodoList();
-
-      // Cargar Libros PDF
-      refreshLibraryList();
-    }
-
-    // --- GESTIÓN DE NOTAS MÚLTIPLES Y FORMATO ---
-    let userNotes = [];
-    let activeNoteId = null;
-
-    function loadNotesList() {
-      if (!currentUser) return;
-      userNotes = JSON.parse(localStorage.getItem(`ac_notes_list_${currentUser.uid}`)) || [
-        { id: 1, title: 'Nota General 1', content: '' }
-      ];
-      renderNotesSelect();
-      if (userNotes.length > 0) {
-        selectNote(userNotes[0].id);
-      }
-    }
-
-    function renderNotesSelect() {
-      const select = document.getElementById('notes-select');
-      select.innerHTML = '';
-      userNotes.forEach(n => {
-        const opt = document.createElement('option');
-        opt.value = n.id;
-        opt.textContent = n.title;
-        select.appendChild(opt);
-      });
-    }
-
-    function selectNote(noteId) {
-      activeNoteId = Number(noteId);
-      document.getElementById('notes-select').value = activeNoteId;
-      const note = userNotes.find(n => n.id === activeNoteId);
-      if (note) {
-        document.getElementById('notebook-editor').innerHTML = note.content;
-      }
-    }
-
-    function saveCurrentNoteContent() {
-      if (!currentUser || !activeNoteId) return;
-      const editor = document.getElementById('notebook-editor');
-      const noteIndex = userNotes.findIndex(n => n.id === activeNoteId);
-      if (noteIndex !== -1) {
-        userNotes[noteIndex].content = editor.innerHTML;
-        localStorage.setItem(`ac_notes_list_${currentUser.uid}`, JSON.stringify(userNotes));
-        
-        const status = document.getElementById('save-status');
-        status.innerText = "Guardando...";
-        setTimeout(() => {
-          status.innerText = "✓ Guardado automáticamente";
-        }, 400);
-      }
-    }
-
-    function createNewNote() {
-      const title = prompt('Nombre de la nueva libreta/nota:', `Nota ${userNotes.length + 1}`);
-      if (!title) return;
-      const newNote = { id: Date.now(), title, content: '' };
-      userNotes.push(newNote);
-      localStorage.setItem(`ac_notes_list_${currentUser.uid}`, JSON.stringify(userNotes));
-      renderNotesSelect();
-      selectNote(newNote.id);
-    }
-
-    function deleteCurrentNote() {
-      if (userNotes.length <= 1) {
-        alert('Debes conservar al menos una nota en tu espacio.');
-        return;
-      }
-      if (confirm('¿Eliminar esta libreta de notas?')) {
-        userNotes = userNotes.filter(n => n.id !== activeNoteId);
-        localStorage.setItem(`ac_notes_list_${currentUser.uid}`, JSON.stringify(userNotes));
-        renderNotesSelect();
-        selectNote(userNotes[0].id);
-      }
-    }
-
-    function exportCurrentNote() {
-      const note = userNotes.find(n => n.id === activeNoteId);
-      if (!note) return;
-      const tempDiv = document.createElement('div');
-      tempDiv.innerHTML = note.content;
-      const textContent = tempDiv.innerText || tempDiv.textContent || '';
-      
-      const blob = new Blob([textContent], { type: 'text/plain;charset=utf-8' });
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = `${note.title.replace(/\s+/g, '_')}.txt`;
-      a.click();
-    }
-
-    function formatText(cmd, val = null) {
-      document.execCommand(cmd, false, val);
-      saveCurrentNoteContent();
-    }
-
-    // --- METAS DIARIAS (TO-DO LIST) ---
-    let todoTasks = [];
-
-    function renderTodoList() {
-      const listEl = document.getElementById('todo-list');
-      listEl.innerHTML = '';
-      
-      if (todoTasks.length === 0) {
-        listEl.innerHTML = '<p class="text-xs text-slate-500 text-center py-2">Sin metas anotadas hoy</p>';
-        updateTodoProgress();
-        return;
-      }
-
-      todoTasks.forEach((t, i) => {
-        listEl.innerHTML += `
-          <div class="flex items-center justify-between bg-slate-950 px-2.5 py-1.5 rounded-lg border border-slate-800 text-xs">
-            <label class="flex items-center gap-2 cursor-pointer flex-1">
-              <input type="checkbox" ${t.done ? 'checked' : ''} onchange="toggleTodoTask(${i})" class="accent-indigo-500 rounded">
-              <span class="${t.done ? 'line-through text-slate-500' : 'text-slate-200'}">${t.text}</span>
-            </label>
-            <button onclick="deleteTodoTask(${i})" class="text-slate-500 hover:text-rose-400 text-xs px-1">✕</button>
-          </div>
-        `;
-      });
-      updateTodoProgress();
-    }
-
-    function updateTodoProgress() {
-      if (todoTasks.length === 0) {
-        document.getElementById('todo-progress-bar').style.width = '0%';
-        document.getElementById('todo-progress-text').innerText = '0%';
-        return;
-      }
-      const doneCount = todoTasks.filter(t => t.done).length;
-      const pct = Math.round((doneCount / todoTasks.length) * 100);
-      document.getElementById('todo-progress-bar').style.width = `${pct}%`;
-      document.getElementById('todo-progress-text').innerText = `${pct}%`;
-    }
-
-    function addTodoTask(e) {
-      e.preventDefault();
-      const input = document.getElementById('todo-input');
-      const text = input.value.trim();
-      if (!text || !currentUser) return;
-
-      todoTasks.push({ text, done: false });
-      localStorage.setItem(`ac_todos_${currentUser.uid}`, JSON.stringify(todoTasks));
-      input.value = '';
-      renderTodoList();
-    }
-
-    function toggleTodoTask(idx) {
-      todoTasks[idx].done = !todoTasks[idx].done;
-      localStorage.setItem(`ac_todos_${currentUser.uid}`, JSON.stringify(todoTasks));
-      renderTodoList();
-    }
-
-    function deleteTodoTask(idx) {
-      todoTasks.splice(idx, 1);
-      localStorage.setItem(`ac_todos_${currentUser.uid}`, JSON.stringify(todoTasks));
-      renderTodoList();
-    }
-
-    // --- GESTIÓN DE PDFS ---
-    function saveBookToStorage(file) {
-      return new Promise((resolve, reject) => {
-        const transaction = db.transaction(['user_books'], 'readwrite');
-        const store = transaction.objectStore('user_books');
-        const bookData = {
-          userId: currentUser.uid,
-          name: file.name,
-          size: file.size,
-          data: file,
-          dateAdded: new Date().toISOString()
-        };
-        const request = store.add(bookData);
-        request.onsuccess = (e) => resolve(e.target.result);
-        request.onerror = (e) => reject(e.target.error);
-      });
-    }
-
-    async function refreshLibraryList() {
-      if (!currentUser || !db) return;
-      
-      const transaction = db.transaction(['user_books'], 'readonly');
-      const store = transaction.objectStore('user_books');
-      const request = store.getAll();
-
-      request.onsuccess = () => {
-        const allBooks = request.result || [];
-        const userBooks = allBooks.filter(b => b.userId === currentUser.uid);
-        
-        const select = document.getElementById('library-select');
-        select.innerHTML = '';
-
-        if (userBooks.length === 0) {
-          select.innerHTML = '<option value="">(Sin libros en tu espacio)</option>';
-          return;
-        }
-
-        const defaultOpt = document.createElement('option');
-        defaultOpt.value = "";
-        defaultOpt.textContent = `-- Mis Libros (${userBooks.length}) --`;
-        select.appendChild(defaultOpt);
-
-        userBooks.forEach(b => {
-          const opt = document.createElement('option');
-          opt.value = b.id;
-          opt.textContent = `${b.name} (${(b.size / (1024*1024)).toFixed(1)} MB)`;
-          select.appendChild(opt);
-        });
-      };
-    }
-
-    async function handlePDFUpload(e) {
-      const file = e.target.files[0];
-      if (!file || !currentUser) return;
-
-      const newId = await saveBookToStorage(file);
-      await refreshLibraryList();
-      switchSavedBook(newId);
-    }
-
-    function switchSavedBook(bookId) {
-      if (!bookId) return;
-      const transaction = db.transaction(['user_books'], 'readonly');
-      const store = transaction.objectStore('user_books');
-      const request = store.get(Number(bookId));
-
-      request.onsuccess = () => {
-        const book = request.result;
-        if (book && book.userId === currentUser.uid) {
-          if (activeObjectUrl) URL.revokeObjectURL(activeObjectUrl);
-          activeObjectUrl = URL.createObjectURL(book.data);
-
-          const frame = document.getElementById('pdf-frame');
-          document.getElementById('pdf-placeholder').classList.add('hidden');
-          frame.src = activeObjectUrl;
-          frame.classList.remove('hidden');
-        }
-      };
-    }
-
-    function deleteSelectedBook() {
-      const select = document.getElementById('library-select');
-      const bookId = select.value;
-      if (!bookId) return;
-
-      if (confirm('¿Eliminar este libro de tu cuenta?')) {
-        const transaction = db.transaction(['user_books'], 'readwrite');
-        const store = transaction.objectStore('user_books');
-        store.delete(Number(bookId));
-        transaction.oncomplete = () => {
-          document.getElementById('pdf-frame').src = '';
-          document.getElementById('pdf-frame').classList.add('hidden');
-          document.getElementById('pdf-placeholder').classList.remove('hidden');
-          refreshLibraryList();
-        };
-      }
-    }
-
-    function toggleFullscreen() {
-      const elem = document.getElementById('main-tab-container');
-      if (!document.fullscreenElement) {
-        elem.requestFullscreen();
-      } else {
-        document.exitFullscreen();
-      }
-    }
-
-    // --- RACHAS Y FLASHCARDS ---
-    let streakData = [];
-    let cards = [];
-    let currentIndex = 0;
-
-    function renderStreaks() {
-      const grid = document.getElementById('streak-grid');
-      document.getElementById('streak-count').innerText = `${streakData.length} días`;
-      grid.innerHTML = '';
-      const days = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
-      days.forEach((day, idx) => {
-        const isDone = streakData.includes(idx);
-        grid.innerHTML += `<div class="py-2 rounded-lg flex flex-col items-center justify-center border text-xs font-bold ${isDone ? 'bg-emerald-950 border-emerald-800 text-emerald-300' : 'bg-slate-950 border-slate-800 text-slate-500'}"><span>${day}</span><span>${isDone ? '🩺' : '•'}</span></div>`;
-      });
-    }
-
-    function markTodayStreak() {
-      if (!currentUser) return;
-      const todayIdx = (new Date().getDay() + 6) % 7;
-      if (!streakData.includes(todayIdx)) {
-        streakData.push(todayIdx);
-        localStorage.setItem(`ac_streaks_${currentUser.uid}`, JSON.stringify(streakData));
-        renderStreaks();
-      }
-    }
-
-    function renderCard() {
-      if (cards.length === 0) {
-        document.getElementById('card-question').innerText = "Sin tarjetas en tu cuenta";
-        document.getElementById('card-answer').innerText = "Agrega una nueva abajo";
-        document.getElementById('card-counter').innerText = "0 / 0";
-        return;
-      }
-      document.getElementById('card-question').innerText = cards[currentIndex].q;
-      document.getElementById('card-answer').innerText = cards[currentIndex].a;
-      document.getElementById('card-counter').innerText = `${currentIndex + 1} / ${cards.length}`;
-    }
-
-    function flipCard() {
-      const front = document.getElementById('card-front');
-      const back = document.getElementById('card-back');
-      front.classList.toggle('hide-card');
-      back.classList.toggle('hide-card');
-    }
-
-    function reviewCard(known) {
-      if (cards.length === 0) return;
-      if (!known) {
-        const current = cards.splice(currentIndex, 1)[0];
-        cards.push(current);
-      } else {
-        currentIndex = (currentIndex + 1) % cards.length;
-      }
-      flipCard();
-      renderCard();
-    }
-
-    function nextCard() {
-      if (cards.length === 0) return;
-      currentIndex = (currentIndex + 1) % cards.length;
-      renderCard();
-    }
-
-    function prevCard() {
-      if (cards.length === 0) return;
-      currentIndex = (currentIndex - 1 + cards.length) % cards.length;
-      renderCard();
-    }
-
-    function addCard(e) {
-      e.preventDefault();
-      if (!currentUser) return;
-      const q = document.getElementById('input-q').value.trim();
-      const a = document.getElementById('input-a').value.trim();
-      cards.push({ q, a });
-      localStorage.setItem(`ac_cards_${currentUser.uid}`, JSON.stringify(cards));
-      document.getElementById('input-q').value = '';
-      document.getElementById('input-a').value = '';
-      currentIndex = cards.length - 1;
-      renderCard();
-    }
-
-    function deleteCurrentCard() {
-      if (cards.length === 0 || !currentUser) return;
-      cards.splice(currentIndex, 1);
-      localStorage.setItem(`ac_cards_${currentUser.uid}`, JSON.stringify(cards));
-      if (currentIndex >= cards.length && currentIndex > 0) currentIndex--;
-      renderCard();
-    }
-  </script>
 </body>
 </html>
